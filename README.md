@@ -1,6 +1,6 @@
 # .NET interview topics
 
-## Acronyms
+## Akronimy
 #### SOLID
 ##### **S**ingle Responsibility Principle
 ##### **O**pen-Closed Principle
@@ -13,23 +13,23 @@
 ### 
 
 ## Design Patterns
-Typical, well-tested solution to a commonly occurring problems in software design. 
+Typowe rozwiązania problemów często napotykanych podczas projektowania oprogramowania. Stanowią plan, który po dostosowaniu pomaga poradzić sobie z konkretnym problemem.
 
-**Don't** mistake them for algorithm. Algorithm define exact steps that always achieve concrete goal, design pattern is more of high-level description.
+**Nie mylić** z algorytmem. Algorytm opisuje konkretne kroki, które po zastosowaniu zawsze prowadzą do znanego rezultatu; wzorce projektowe stanowią wysokopoziomowy opis rozwiązania.
 
-Why bother?
-- you don't have to _know_ them, but eventually you'll _discover_ them
-- known and well tested solution/approach to a problem
-- guide how to solve given problem, or how to not let the problem occurr at all
-- common language with other devs: "_hey bro, just use singleton_" 
+**Zalety**
+- nie trzeba ich _znać_, ale prędzej czy później _wynajdzie_ się je samemu
+- opisują wypróbowane rozwiązania
+- opisują jak nie dopuścić do częstego problemu
+- stanowią _wspólny język_ z innymi programistami ("_użyj singletona_")
 
-Caveats?
-- overuse: _if all you have is a hammer, everything looks like a nail_
-- dumb copy-paste: design patterns **has** to be adopted
-- too abstract: might lead to hard-to-read code, especially in simple domains
+**Wady**
+- nadużywanie: _jeżeli masz do dyspozycji tylko młotek, to wszystko wygląda jak gwóźdź_
+- bezmyślna copy-paste: wzorce **trzeba** dostosować do danego rozwiązania
+- zbyt abstrakcyjny kod w przypadku prostych projektów
 
 ### Creational
-Describe how to effectively create objects.
+Opisują jak efektywnie tworzyć obiekty.
 
 #### Factory method
 #### Abstract factory
@@ -47,7 +47,7 @@ Hermetyzuje tworzenie obiektu, zwłaszcza jeżeli proces tworzenia jest bardzo z
 - jeżeli obiekty były tworzone w różnych miejscach w kodzie, to mamy centralizacje i zmiany musimy wprowadzać tylko w jednym miejscu
 
 ### Structural
-Describe how to effectively compose objects into larger structures.
+Opisują jak efektywnie składać obiekty w większe struktury.
 
 #### Adapter
 #### Bridge
@@ -72,7 +72,7 @@ Zapewnia jeden interfejs dla wielu interfejsów podsystemu. Tworzy interfejs wys
 #### Flyweight
 
 ### Behavioral
-Describe how to effectively communicate and share responsibilities between objects.
+Opisują jak efektywnie kommunikowac oraz dzielić się obowiązkami między obiektami.
 
 #### Chain of responsibility
 #### Command
