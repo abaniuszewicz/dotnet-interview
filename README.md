@@ -2,11 +2,11 @@
 
 ## Akronimy
 #### SOLID
-##### **S**ingle Responsibility Principle
-##### **O**pen-Closed Principle
-##### **L**iskov Substitution Principle
-##### **I**nterface Segregation Principle
-##### **D**ependency Inversion Principle
+##### Single Responsibility Principle
+##### Open-Closed Principle
+##### Liskov Substitution Principle
+##### Interface Segregation Principle
+##### Dependency Inversion Principle
 #### DRY - Don't Repeat Yourself
 #### KISS - Keep It Simple Stupid
 #### YAGNI - You Aren't Gonna Need It
@@ -50,6 +50,9 @@ Hermetyzuje tworzenie obiektu, zwłaszcza jeżeli proces tworzenia jest bardzo z
 Opisują jak efektywnie składać obiekty w większe struktury.
 
 #### Adapter
+Przekształca interfejs danej klasy do postaci innego interfejsu.
+- pozwala na współpracę klas które ze względu na niekompatybilne interfejsy nie mogły ze sobą współpracować
+- adapter **implementuje** (_is-a_) interfejs docelowy oraz **posiada** (_has-a_) intancje obiektu adaptowanego, do którego deleguje żądania 
 #### Bridge
 #### Composite
 #### Decorator
@@ -81,6 +84,7 @@ Opisują jak efektywnie kommunikowac oraz dzielić się obowiązkami między obi
 #### Mediator
 #### Memento
 #### Observer
+Definiuje pomiędzy obiektami relację jeden-do-wielu w taki sposób, że kiedy wybrany obiekt zmienia swój stan, to wszystkie jego obiekty zależne zostają o tym powiadomione i automatycznie zaktualizowane.
 #### State
 #### Strategy
 Definiuje rodzinę algorytmów i wkłada je w osobne klasy które można wymieniać. Sprawia że algorytm klienta staje się niezależny od konkretnej implementacji.
