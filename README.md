@@ -1,3 +1,54 @@
+- [.NET interview topics](#net-interview-topics)
+  - [Akronimy](#akronimy)
+      - [SOLID](#solid)
+        - [Single Responsibility Principle](#single-responsibility-principle)
+        - [Open-Closed Principle](#open-closed-principle)
+        - [Liskov Substitution Principle](#liskov-substitution-principle)
+        - [Interface Segregation Principle](#interface-segregation-principle)
+        - [Dependency Inversion Principle](#dependency-inversion-principle)
+      - [DRY - Don't Repeat Yourself](#dry---dont-repeat-yourself)
+      - [KISS - Keep It Simple Stupid](#kiss---keep-it-simple-stupid)
+      - [YAGNI - You Aren't Gonna Need It](#yagni---you-arent-gonna-need-it)
+  - [Buzzwordy](#buzzwordy)
+    - [API](#api)
+  - [Design Patterns](#design-patterns)
+    - [Creational](#creational)
+      - [Factory method](#factory-method)
+      - [Abstract factory](#abstract-factory)
+      - [Builder](#builder)
+      - [Prototype](#prototype)
+      - [Singleton](#singleton)
+      - [Simple factory (not cannonical)](#simple-factory-not-cannonical)
+    - [Structural](#structural)
+      - [Adapter](#adapter)
+      - [Bridge](#bridge)
+      - [Composite](#composite)
+      - [Decorator](#decorator)
+      - [Proxy](#proxy)
+      - [Facade](#facade)
+      - [Flyweight](#flyweight)
+    - [Behavioral](#behavioral)
+      - [Chain of responsibility](#chain-of-responsibility)
+      - [Command](#command)
+      - [Interpreter](#interpreter)
+      - [Iterator](#iterator)
+      - [Mediator](#mediator)
+      - [Memento](#memento)
+      - [Observer](#observer)
+      - [State](#state)
+      - [Strategy](#strategy)
+      - [Template method](#template-method)
+      - [Visitor](#visitor)
+      - [Null object (not cannonical)](#null-object-not-cannonical)
+  - [Architecture](#architecture)
+  - [Web](#web)
+    - [HTTP](#http)
+      - [Methods](#methods)
+      - [Responses](#responses)
+    - [REST (REpresentational State Transfer)](#rest-representational-state-transfer)
+    - [SOAP (Simple Object Access Protocol)](#soap-simple-object-access-protocol)
+  - [OS](#os)
+
 # .NET interview topics
 
 ## Akronimy
@@ -10,7 +61,11 @@
 #### DRY - Don't Repeat Yourself
 #### KISS - Keep It Simple Stupid
 #### YAGNI - You Aren't Gonna Need It
-### 
+## Buzzwordy
+### API
+- zbiór definicji i protokołów służących budowaniu oraz integrowaniu aplikacji
+- kontrakt pomiędzy dostawcą _informacji_, a end-userem
+- _mediator_ pomiędzy userami, a resource'ami których potrzebują
 
 ## Design Patterns
 Typowe rozwiązania problemów często napotykanych podczas projektowania oprogramowania. Stanowią plan, który po dostosowaniu pomaga poradzić sobie z konkretnym problemem.
@@ -106,7 +161,76 @@ Usuwa konieczność obsługi _NULL_ przez klienta.
 
 ## Web
 ### HTTP
-### REST
+#### Methods
+- `GET`
+  - pobiera wskazany zasób
+- `POST` 
+  - tworzy nowy zasób
+  - pobiera dane w jeżeli musimy dostarczyć wielu parametrów (lub nie chcemy ich _pokazać_ w url)
+  - robi wszystko inne co nie pasuje do innych metod 
+- `PUT`
+  - zastępuje wskazany zasób tym co przekazujemy
+  - _(czasami)_ tworzy nowy zasób, jeżeli możemy mu nadać _id_ z góry
+- `PATCH`
+  - aktualizuje część wskazanego zasobu
+- `DELETE`
+  - kasuje wskazany zasób
+- `HEAD`
+  - zwraca to co `GET`, ale bez body
+- `CONNECT`
+  - używane do _https_; `GET` = _http_, `CONNECT` = _https_
+  - służy do nawiązania komunikacji z serwerem (tunnel)
+- `OPTIONS`
+  - sprawdzenie możliwości serwera żeby dowiedzieć się _jak z nim gadać_
+  - zwraca informacje o np. wersji HTTP,  
+- `TRACE`
+  - diagnostyka; jeżeli włączona serwer będzie zwracał dokładnie to co mu przesłaliśmy (_echo_)
+  - kiedyś wykorzystywane do hackowania, bo niekiedy serwery zwracały również swoje wewnętrzne authentication headery
+  
+#### Responses
+- 1xx - Informational responses
+  - 100 - continue
+- 2xx - Sucessfull responses
+  - 200 - ok
+  - 201 - created (nagłówek `Location` powinien zawierać łącze do nowego zasobu)
+  - 204 - no content (np. przy `DETELE` i `PUT`)
+- 3xx - Redirection messages
+  - 301 - moved permamenty
+  - 304 - not modified (caching; zasób się nie zmienił więc możemy go nadal używać)
+- 4xx - Client error responses
+  - 400 - bad request (brakujące lub niepoprawne dane przesłane do servera)
+  - 401 - unauthorized (użytkownik nie uwierzytelniony)
+  - 403 - forbidden (użytkownik nie ma uprawnień)
+  - 404 - not found
+  - 409 - conflict (próba wykonania błędnej operacji, np. stworzenie czegoś o zduplikowanym _id_)
+- 5xx - Server error responses
+  - 500 - internal server error
+  - 502 - bad gateway
+  - 503 - service unavailable
+  
+### REST (REpresentational State Transfer)
+Zbiór architektonicznych wymagań. **Nie** jest protokołem ani żadnym standardem, można zbudować RESTful API na wiele sposobów.
+
+- client-server
+  - separation of concerns; nie musimy się _martwić_ o UI
+- statelessness
+  - klient musi przekazać wszystko czego potrzebuje serwer aby poprawnie zinterpretować żądanie
+  - server nie utrzymuje sesji
+  - dobre do high-performance, bo serwer nie musi trzymać śmieci
+- cacheability
+  - aby lepiej skalowało i było szybsze
+  - używamy headerów aby określić czy coś może być scacheowane lub też nie
+- layered system
+  - ani klient ani serwer nie powinny zależeć od informacji czy komunikują się z aplikacją końcową czy _gadają_ przez proxy/inną warstwę
+- uniform interface
+  - zasoby są identyfikowane w requeście (np. w URI)
+  - zasób powinien zawierać wszystko czego potrzebuje klient żeby go zmodyfikować/skasować
+  - response'y zawierają opis jak pracować z wiadomością
+  - HATEOAS (Hypermedia As The Engine Of Aplication State): mając główny link do API, klient powinien być w stanie _odkryć_ wszystkie resource'y których potrzebuje 
+- code on demand (optional)
+  - server może zwracać _kod wykonywalny_, np. skompilowane komponenty (Java applets)
+  
+### SOAP (Simple Object Access Protocol)
 
 ## OS
 
