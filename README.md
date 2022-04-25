@@ -246,6 +246,11 @@ Zbiór architektonicznych wymagań. **Nie** jest protokołem ani żadnym standar
   - server może zwracać _kod wykonywalny_, np. skompilowane komponenty (Java applets)
   
 ## SOAP (Simple Object Access Protocol)
+  
+## Identity
+
+### OAuth
+### JWT
 
 # OS
 
