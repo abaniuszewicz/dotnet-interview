@@ -16,3 +16,9 @@ jobs:
           name: dotnet-interview.pdf
           path: main.pdf
           if-no-files-found: error
+      - name: Commit pdf
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: publish pdf file(s)
+          file_pattern: *.pdf
+          
