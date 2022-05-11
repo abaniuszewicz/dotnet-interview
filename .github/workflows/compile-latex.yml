@@ -12,5 +12,6 @@ jobs:
           root_file: dotnet-interview.tex
       - name: Release pdf
         uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: dotnet-interview.pdf
