@@ -1,7 +1,7 @@
 name: Publish dotnet-interview.pdf
 on: [push]
 jobs:
-  publish pdf:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
