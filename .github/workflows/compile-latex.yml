@@ -9,15 +9,8 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: main.tex
-      - name: Upload pdf
-        uses: actions/upload-artifact@v3
+          root_file: dotnet-interview.tex
+      - name: Release pdf
+        uses: softprops/action-gh-release@v1
         with:
-          name: dotnet-interview.pdf
-          path: main.pdf
-          if-no-files-found: error
-      - name: Commit pdf
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: publish pdf file
-          file_pattern: *.pdf
+          files: dotnet-interview.pdf
