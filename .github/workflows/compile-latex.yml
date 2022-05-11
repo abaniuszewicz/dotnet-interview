@@ -1,4 +1,4 @@
-name: Build LaTeX document
+name: Publish dotnet-interview.pdf
 on: [push]
 jobs:
   build_latex:
