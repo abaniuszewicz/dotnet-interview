@@ -9,6 +9,7 @@ jobs:
         with:
           fetch-depth: '0'
       - name: Bump version and push tag
+        id: tag_version
         uses: anothrNick/github-tag-action@1.39.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -20,4 +21,5 @@ jobs:
       - name: Release pdf
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{steps.tag_version.outputs.tag}}
           files: dotnet-interview.pdf
