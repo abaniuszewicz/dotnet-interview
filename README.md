@@ -3,22 +3,53 @@
 <details><summary><h2>Założenia programowania obiektowego</h2></summary>
 
 ### Hermetyzacja
+> Ukrywanie składowych (pól, metod) tak, aby były one dostępne tylko wewnątrz danej klasy
+
+- wyodrębnia interfejs (możemy zmieniać prywatną implementację bez złamania kontraktu)
+- uodparnia model na błędy (chronimy wewnętrzny stan sprawdzeniem poprawności argumentów)
+- lepiej odzwierciedla rzeczywistość
+  - :x: `decimal Account.Balance += -10`
+  - :heavy_check_mark: `Account.Deposit(decimal amount)` + `Account.Withdraw(decimal amount)`
+
 ### Dziedziczenie
+> Mechanizm pozwalający na współdzielenie części zachowań poprzez definiowanie zależności derived/base
+
+- redukuje duplikacje w kodzie
+- pojedynczy punkt zmian/poprawek
+- relacja: **is-a** (nie mylić z **has-a**)
+
 ### Polimorfizm
+> Zdolność (obiektu - dziedziczenie, metody - przeładowania) do przybierania wielu form
+
+- ten sam interfejs prowadzi do różnych zachowań
+  - :x: `void DrawCircle(Circle circle)` + `void DrawSquare(Square square)`
+  - :heavy_check_mark: `void Draw(Shape shape)` + `Draw(new Circle())`, `Draw(new Square())`
+
 ### Abstrakcja
+> Obiekty mogą być reprezentowane jako modele stanowiące uproszczenie problemu. Wykonują one zadania bez zdradzania jak zostały one zrealizowane.
+
+- wyodrębnienie (generalizacja) funkcjonalności, które mogą być zastosowane w innych kontekstach (`Sms : Message`, `Email : Message`, wspólna funkcjonalność: `Message.Send()`)
+
+### Różnice: hermetyzacja vs abstrakcja
+- hermetyzacja: ukrycie informacji, abstrakcja: ukrycie implementacji
+- hermetyzacja: gettery/settery, abstrakcja: abstract classes, interfaces
 
 </details>
-  
+
 <details><summary><h2>SOLID</h2></summary>
 
 ### Single Responsibility Principle
 > Klasa powinna mieć tylko jedną odpowiedzialność (nigdy nie powinien istnieć więcej niż jeden powód do modyfikacji klasy).
+
 ### Open-Closed Principle
 > Klasy (encje) powinny być otwarte na rozszerzenia i zamknięte na modyfikacje.
+
 ### Liskov Substitution Principle
 > Funkcje które używają wskaźników lub referencji do klas bazowych, muszą być w stanie używać również obiektów klas dziedziczących po klasach bazowych, bez dokładnej znajomości tych obiektów.
+
 ### Interface Segregation Principle
 > Wiele dedykowanych interfejsów jest lepsze niż jeden ogólny.
+
 ### Dependency Inversion Principle
 > Wysokopoziomowe moduły nie powinny zależeć od modułów niskopoziomowych - zależności między nimi powinny wynikać z abstrakcji.
 
@@ -31,10 +62,14 @@
 ## YAGNI - You Aren't Gonna Need It
 ## LOD - Law of Demeter
 ## SLAP - Single Level of Abstraction Principle
+## CQRS - Command/Query Responsibility Separation
 ## API
 - zbiór definicji i protokołów służących budowaniu oraz integrowaniu aplikacji
 - kontrakt pomiędzy dostawcą _informacji_, a end-userem
 - _mediator_ pomiędzy userami, a resource'ami których potrzebują
+
+## Coupling/Cohesion
+
 
 </details>
 
@@ -51,6 +86,7 @@ Typowe rozwiązania problemów często napotykanych podczas projektowania oprogr
 - opisują wypróbowane rozwiązania
 - opisują jak nie dopuścić do częstego problemu
 - stanowią _wspólny język_ z innymi programistami ("_użyj singletona_")
+- stanowią _core_ wielu frameworków, znając je musimy poznać tylko syntax bo zasady pozostają te same
 
 **Wady**
 - nadużywanie: _jeżeli masz do dyspozycji tylko młotek, to wszystko wygląda jak gwóźdź_
@@ -89,7 +125,7 @@ Hermetyzuje tworzenie obiektu, zwłaszcza jeżeli proces tworzenia jest bardzo z
 - jeżeli obiekty były tworzone w różnych miejscach w kodzie, to mamy centralizacje i zmiany musimy wprowadzać tylko w jednym miejscu
 
 </details>
-  
+
 <details><summary><h2>Structural</h2></summary>
 
 Opisują jak efektywnie składać obiekty w większe struktury.
@@ -122,7 +158,7 @@ Zapewnia jeden interfejs dla wielu interfejsów podsystemu. Tworzy interfejs wys
 - fasada **posiada** (_has-a_) elementy podsystemu i to do nich deleguje żądania
 
 ### Flyweight
-  
+
 </details>
 
 <details><summary><h2>Behavioural</h2></summary>
@@ -221,7 +257,7 @@ Usuwa konieczność obsługi _NULL_ przez klienta.
   - 503 - service unavailable
 
 </details>
-  
+
 <details><summary><h2>REST (REpresentational State Transfer)</h2></summary>
 
 Zbiór architektonicznych wymagań. **Nie** jest protokołem ani żadnym standardem, można zbudować RESTful API na wiele sposobów.
@@ -246,11 +282,11 @@ Zbiór architektonicznych wymagań. **Nie** jest protokołem ani żadnym standar
   - server może zwracać _kod wykonywalny_, np. skompilowane komponenty (Java applets)
 
 </details>
-  
+
 <details><summary><h2>SOAP (Simple Object Access Protocol)</h2></summary>
 
 </details>
-  
+
 <details><summary><h2>Identity</h2></summary>
 
 ### OAuth
