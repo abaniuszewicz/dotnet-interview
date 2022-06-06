@@ -227,6 +227,17 @@ Opisują jak efektywnie komunikować oraz dzielić się obowiązkami między obi
 ### Observer
 > Definiuje pomiędzy obiektami relację jeden-do-wielu w taki sposób, że kiedy wybrany obiekt zmienia swój stan, to wszystkie jego obiekty zależne zostają o tym powiadomione i automatycznie zaktualizowane.
 
+- używany kiedy inne obiekty muszą zostać powiadomione o zmianie stanu jakiegoś obiektu
+- publisher posiada 3 metody: `.Add(subscriber)`, `.Remove(subscriber)` oraz `.Notify()`, często są zamykane w klasie bazowej lub osobnym obiekcie
+- push vs pull:
+  - push: publisher wysyła dane których potrzebują subskrybenci (`subscriber.Update(int)`)
+  - pull: subskrybenci pobierają dane których potrzebują (`subscriber.Update(this)`)
+- podobne wzorce:
+  - **chain of command**: przekazuje żądania sekwencyjnie, **observer**: _losowo_ (w środku jest _jakaś_ struktura, ale nie wiemy jaka i co/kiedy się podpięło)
+  - **command**: enkapsuluje akcje, **observer**: enkapsuluje mechanizm powiadamiania
+  - **mediator**: komponenty rozmawiają z punktem centralnym, **observer**: kompenenty mogą być jednocześnie publisherami i subskrybentami i być powiązane ze sobą
+    - można też stworzyć mediatora z użyciem obserwatora, gdzie mediator będzie publisherem
+
 ### State
 > Umożliwia obiektowi zmianę zachowania wraz ze zmianą jego wewnętrznego stanu. Po takiej zmianie funkcjonuje on jak inna klasa.
 
