@@ -181,6 +181,17 @@ Opisują jak efektywnie komunikować oraz dzielić się obowiązkami między obi
 ### Chain of responsibility
 
 ### Command
+> Hermetyzuje żądania w postaci obiektów, co pozwala na parametryzowanie obiektów różnymi żądaniami oraz obsługiwanie operacji, które można wycofać.
+
+- pozwala na składowanie żądań w formie obiektu, dzięki czemu można je przekazywać, kolejkować, zapisywać, undo-ować
+- separuje klasę wysyłającą żądanie od konkretnej implementacji
+- `interface ICommand` z jedną metodą `.Execute()`, ewentualnie `IUndoableCommand : ICommand` z metodą `.Undo()`
+  - w C\#: `ICommand` posiada `.Execute(object param)`, `.CanExecute(object param)` oraz `event CanExecuteChanged`
+- memento: składuje _stan_ obiektu (potencjalnie dużo pamięci), command w/ undo: składuje _wiedzę_ jak cofnąć komendę
+- przykład: przycisk w edytorze tekstu
+  - zamiast wielu podklas `OkButton`, `CancelButton`, `SaveButton` które zawierają swoją logikę, tworzymy jedną klasę `Button` która przyjmuje `ICommand` (`OkCommand`, `CancelCommand`, `SaveCommand`)
+  - poszczególne komendy przyjmują w swoim konstruktorze serwisy do których delegują swoje operacje: `SaveCommand.Execute()` → `FileManager.SaveFile(file)`
+  - dzięki temu ten sam kod (`SaveCommand`) może być użyty też w innych sytuacjach (np. użycie skrótu <kbd>CTRL</kbd> + <kbd>S</kbd>)
 
 ### Interpreter
 
