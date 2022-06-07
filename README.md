@@ -304,6 +304,16 @@ Opisują jak efektywnie komunikować oraz dzielić się obowiązkami między obi
   - klasy dziedziczące `CsvParser : Parser`, `HtmlParser : Parser`, `XmlParser : Parser`, które umieją czytać swoje formaty ze `Stream`
 
 ### Visitor
+> Pozwala na dodanie nowych zachowań do struktur obiektów bez ich modyfikacji.
+
+- używamy kiedy mamy niezmieniającą się strukturę obiektów i chcemy mieć możliwość dodawania na nich nowych operacji
+- kiedy chcemy dodać nową operację, dodajemy nową implementację visitora
+- poszczególne klasy przyjmują visitora (`.Accept(visitor)`) i wywołują odpowiednią dla siebie metodę interfejsu visitora (przez polimorfizm `.Visit(anchor)` lub sprecyzowaną nazwę `VisitAnchor(anchor)`)
+- wady: złe dla niestabilnych struktur, brak dostępu do prywatnych składowych
+- przykład: operacje na nodach html
+  - zbiór jest zamknięty i zdefiniowany w standardzie, oprócz anchor, heading itd. nie będzie nowych node'ów
+  - visitory dla nich będą różne w zależności od use case, np. `Highlight`, `Format`, `ExtractPlainText`
+  - mając `visitor = new HighlightVisitor()` i listę node'ów, wywołamy na niej `.Accept(visitor)`. Każdy visitor z kolei wywoła odpowiednią dla siebie metodę visitora, przekazując do niej siebie `.Visit(this)`.
 
 ### Null object
 > Usuwa konieczność obsługi _NULL_ przez klienta.
