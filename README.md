@@ -179,6 +179,18 @@ Opisują jak efektywnie składać obiekty w większe struktury.
 Opisują jak efektywnie komunikować oraz dzielić się obowiązkami między obiektami.
 
 ### Chain of responsibility
+> Pozwala przekazywać żadania wzdłuż łańcucha handlerów. Handlery mogą albo obsłużyć żądanie, albo przekazać je dalej.
+
+- można ustalać kolejność obsługi żądania
+- linked list: każdy node ma referencję do następnego elementu
+  - SRP: tworzymy proste handlery które wiedzą jak obsłużyć żądanie
+  - O/CP: można łatwo rozłączyć łańcuch i dodać/usunąć jakiś element bez naruszania innych
+- dekorator: zawsze przekaże żądanie dalej, chain of responsibility: może zatrzymać procesowanie
+- przykład: mouse click na UI
+  - zdarzenie dostanie najpierw _najbardziej wewnętrzny_ element, jak nie obsłuży to bombelkujemy wyżej
+  - klikamy np. na disabled button, jako że jest wyłączony - nie będzie obsługiwał zdarzenia
+  - button znajduje się w jakimś gridzie, ale go też nie obchodzi akurat to kliknięcie (może w złym miejscu?)
+  - grid znajduje się w oknie, a ono może np. wyświetlić tooltipa z wiadomością helpa
 
 ### Command
 > Hermetyzuje żądania w postaci obiektów, co pozwala na parametryzowanie obiektów różnymi żądaniami oraz obsługiwanie operacji, które można wycofać.
