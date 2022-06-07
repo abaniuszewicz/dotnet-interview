@@ -233,7 +233,7 @@ Opisują jak efektywnie komunikować oraz dzielić się obowiązkami między obi
   - push: publisher wysyła dane których potrzebują subskrybenci (`subscriber.Update(int)`)
   - pull: subskrybenci pobierają dane których potrzebują (`subscriber.Update(this)`)
 - podobne wzorce:
-  - **chain of command**: przekazuje żądania sekwencyjnie, **observer**: _losowo_ (w środku jest _jakaś_ struktura, ale nie wiemy jaka i co/kiedy się podpięło)
+  - **chain of command**: przekazuje żądania sekwencyjnie do momentu aż ktoś obsłuży, **observer**: _losowo_ (w środku jest _jakaś_ struktura, ale nie wiemy jaka i co/kiedy się podpięło) do wszystkich
   - **command**: enkapsuluje akcje, **observer**: enkapsuluje mechanizm powiadamiania
   - **mediator**: komponenty rozmawiają z punktem centralnym, **observer**: kompenenty mogą być jednocześnie publisherami i subskrybentami i być powiązane ze sobą
     - można też stworzyć mediatora z użyciem obserwatora, gdzie mediator będzie publisherem
