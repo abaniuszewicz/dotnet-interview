@@ -209,6 +209,20 @@ Opisują jak efektywnie komunikować oraz dzielić się obowiązkami między obi
   - `Recipe` + iterator na `Ingredient`
 
 ### Mediator
+> Ogranicza bezpośrednią komunikację między obiektami i zmusza je do współpracy wyłącznie za pośrednictwem obiektu mediatora.
+
+- obiekty nie wiedzą o sobie, wiedzą tylko o mediatorze
+- upraszcza system, bo cała _logika sterująca_ znajduje się w jednym miejscu
+- zmniejsza liczbę komunikatów przesyłanych w systemie (zamiast n:n, n:1:n)
+- mediatory mają tendencje do rozrastania się (_god object_)
+- przykład: dialog box
+  - dialog box zawiera button <kbd>Save</kbd> (enabled/disabled) oraz listview
+  - chcemy żeby przycisk był enabled kiedy _coś_ jest wybrane w liście
+  - listview nie informuje przycisku bezpośrednio, zamiast tego informuje mediator, a on przekazuje do innych zainteresowanych
+  - dzięki temu możemy podpiąć dodatkowe kontrolki, np. label który będzie wyświetlał co zostało zaznaczone
+- implementacja:
+  - klasycznie: mediator tworzy komponenty i przekazuje do nich siebie. Komponenty po aktualizacji wywołują metodę mediatora `mediator.Updated(this)`. Mediator sprawdza co zostało zaktualizowane, a następnie wykonuje odpowiednie akcje (`if (component == listview) button.Enabled = listview.HasSelection`).
+  - observer: mediator subskrybuje się do komponentów (`component.Subscribe(this)`), a następnie po jego powiadomieniu przez komponent `subscribers.ForEach(s => s.Notify(this))`, wykonuje odpowiednie akcje (`button.Enabled = listview.HasSelection`).
 
 ### Memento
 > Pozwala zapisywać i przywracać wcześniejszy stan obiektu bez ujawniania szczegółów jego implementacji.
@@ -228,15 +242,15 @@ Opisują jak efektywnie komunikować oraz dzielić się obowiązkami między obi
 > Definiuje pomiędzy obiektami relację jeden-do-wielu w taki sposób, że kiedy wybrany obiekt zmienia swój stan, to wszystkie jego obiekty zależne zostają o tym powiadomione i automatycznie zaktualizowane.
 
 - używany kiedy inne obiekty muszą zostać powiadomione o zmianie stanu jakiegoś obiektu
-- publisher posiada 3 metody: `.Add(subscriber)`, `.Remove(subscriber)` oraz `.Notify()`, często są zamykane w klasie bazowej lub osobnym obiekcie
+- publisher posiada 3 metody: `.Subscribe(subscriber)`, `.Unsubscribe(subscriber)` oraz `.Notify()`, często są zamykane w klasie bazowej lub osobnym obiekcie
 - push vs pull:
-  - push: publisher wysyła dane których potrzebują subskrybenci (`subscriber.Update(int)`)
-  - pull: subskrybenci pobierają dane których potrzebują (`subscriber.Update(this)`)
+  - push: publisher wysyła dane których potrzebują subskrybenci (`subscriber.Notify(int)`)
+  - pull: subskrybenci pobierają dane których potrzebują (`subscriber.Notify(this)`)
 - podobne wzorce:
   - **chain of command**: przekazuje żądania sekwencyjnie do momentu aż ktoś obsłuży, **observer**: _losowo_ (w środku jest _jakaś_ struktura, ale nie wiemy jaka i co/kiedy się podpięło) do wszystkich
   - **command**: enkapsuluje akcje, **observer**: enkapsuluje mechanizm powiadamiania
   - **mediator**: komponenty rozmawiają z punktem centralnym, **observer**: kompenenty mogą być jednocześnie publisherami i subskrybentami i być powiązane ze sobą
-    - można też stworzyć mediatora z użyciem obserwatora, gdzie mediator będzie publisherem
+    - można też stworzyć mediatora z użyciem obserwatora, gdzie mediator będzie subskrybentem i będzie obserwował komponenty
 
 ### State
 > Umożliwia obiektowi zmianę zachowania wraz ze zmianą jego wewnętrznego stanu. Po takiej zmianie funkcjonuje on jak inna klasa.
