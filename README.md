@@ -143,7 +143,9 @@ Opisują jak efektywnie składać obiekty w większe struktury.
 > Przekształca interfejs danej klasy do postaci innego interfejsu.
 
 - pozwala na współpracę klas które ze względu na niekompatybilne interfejsy nie mogły ze sobą współpracować
+- używamy kiedy nie mamy dostępu klasy i nie możemy do niej dodać interfejsu którego potrzebujemy
 - adapter **implementuje** (_is-a_) interfejs docelowy oraz **posiada** (_has-a_) instancję obiektu adaptowanego, do którego deleguje żądania 
+  - można też użyć dziedziczenia `Adapter : Source, IDestination`, ale tylko dla interfejsów (brak wielokrotnego dziedziczenia)
   
 ### Bridge
 ### Composite
