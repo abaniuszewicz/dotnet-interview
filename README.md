@@ -147,6 +147,19 @@ Opisują jak efektywnie składać obiekty w większe struktury.
   
 ### Bridge
 ### Composite
+> Pozwala łączyć obiekty w drzewa, a następnie jednolicie obsługiwać pojedyncze obiekty i ich zbiory.
+
+- wykorzystuje rekurencję
+- trzeba wyodrębnić wspólny interfejs dla liści i kompozytów
+- **dekorator**: ma tylko jeden element podrzędny oraz dodaje nowe obowiązki, **kompozyt**: może mieć wiele elementów podrzędnych oraz nie dodaje nowych funkcjonalności
+- przykład: PowerPoint grupowanie figur
+  - interfejs `IShape` z metodą `.Move()`
+  - okrąg `Circle : IShape`:
+    - metoda `.Move()` przemieszcza po prostu siebie
+  - zbiór okręgów/innych figur `Group : IShape`:
+    - posiada metodę `.Add(IShape)`, dzięki czemu możemy mieć w środku zarówno pojedyncze figury jak i inne grupy
+    - metoda `.Move()` iteruje po wszystkich `IShape` (figura/grupa figur) w sobie, a następnie wywołuje ich metodę move
+
 ### Decorator
 > Pozwala na dynamiczne przydzielanie obiektowi nowych zachowań. Zapewnia alternatywny sposób rozszerzenia funkcjonalności.
 
@@ -313,7 +326,7 @@ Opisują jak efektywnie komunikować oraz dzielić się obowiązkami między obi
 - przykład: operacje na nodach html
   - zbiór jest zamknięty i zdefiniowany w standardzie, oprócz anchor, heading itd. nie będzie nowych node'ów
   - visitory dla nich będą różne w zależności od use case, np. `Highlight`, `Format`, `ExtractPlainText`
-  - mając `visitor = new HighlightVisitor()` i listę node'ów, wywołamy na niej `.Accept(visitor)`. Każdy visitor z kolei wywoła odpowiednią dla siebie metodę visitora, przekazując do niej siebie `.Visit(this)`.
+  - mając `visitor = new HighlightVisitor()` i listę node'ów, wywołamy na niej `.Accept(visitor)`. Każdy visitor poliformicznie wywoła odpowiednią dla siebie metodę visitora, przekazując do niej siebie `.Visit(this)`
 
 ### Null object
 > Usuwa konieczność obsługi _NULL_ przez klienta.
