@@ -165,9 +165,15 @@ Opisują jak efektywnie składać obiekty w większe struktury.
 ### Decorator
 > Pozwala na dynamiczne przydzielanie obiektowi nowych zachowań. Zapewnia alternatywny sposób rozszerzenia funkcjonalności.
 
+- pozwala na uniknięcie eksplozji subklas
 - wykorzystuje kompozycje (_has-a_), a nie dziedziczenie (_is-a_)
 - klasy dekorujące są tego samego typu co dekorowane (interfejs)
 - można je _chainować_, konsumer nie wie czy pracuje z dekoratorem czy z "_prawdziwym_" obiektem (i nie musi tego wiedzieć)
+- nowe zachowania możemy wywołać przed lub po zachowaniu klasy dekorowanej, w zależności od tego co chcemy osiągnąć
+- wada: niektóre frameworki DI mają problem żeby zarejestrować dekoratory ze względu na _circular dependency_
+- przykład: stream `IStream`
+  - zamiast: `CloudStream : IStream`, `CompressedCloudStream : CloudStream`, `EncryptedCloudStream : CloudStream`, `CompressedAndEncryptedCloudStream : CloudStream`
+  - mamy: `CloudStream : IStream` + dwa dekoratory `CompressedStream : IStream`, `EncryptedStream : IStream` które przyjmują w konstruktorze `IStream` 
 
 ### Proxy
 > Zapewnia obiekt pośredniczący który kontroluje dostęp do innego obiektu.
