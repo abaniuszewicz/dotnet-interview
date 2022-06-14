@@ -148,6 +148,23 @@ Opisują jak efektywnie składać obiekty w większe struktury.
   - można też użyć dziedziczenia `Adapter : Source, IDestination`, ale tylko dla interfejsów (brak wielokrotnego dziedziczenia)
   
 ### Bridge
+> Służy do rozdzielenia skomplikowanej hierarchii na dwie osobne, które mogą rosnąć niezależnie od siebie.
+
+- problem powstaje podczas pracy ze strukturami które mogą rosnąć w różnych kierunkach np. kolorowa (czerwona, niebieska, różowa) figura (okrąg, kwadrat, prostokąt)
+  - zazwyczaj rozwiązane dziedziczeniem: `RedCircle`, `BlueCircle`, `PinkCircle`, `RedSquare`, ...
+  - dodanie któregokolwiek nowego wymiaru pociąga za sobą dodanie wielu nowych klas np. nowy kolor: `PurpleCircle`, `PurpleSquare`, `PurpleRectangle`
+- rozwiązaniem jest przestawienie się z dziedziczenia na kompozycję, tj. figura **ma** kolor
+- przykład: UI + API
+  - mamy dwie hierarchie: 
+    - UI: dla normalnego użytkownika, dla administratora, dla moderatora
+    - API: Windows, Linux, Mac
+  - :x: nie rozwiązujemy tego przez ify (`if (IsOnMac()) DoSomethingMacLike()`) - straszne spaghetti
+  - :x: nie rozwiązujemy tego przez dziedziczenie (`UserWindowsLogic`, `AdminWindowsLogic`, `UserMacLogic,` itd.) - eskplozja klas
+  - :heavy_check_mark: rozwiązujemy to przez kompozycję (`class UserLogic` który zawiera `DeviceApi`)
+    - _lewa_ (`class UserLogic`) i _prawa strona_ (`interface IDeviceApi`) mostu powiązane są abstrakcją
+    - poszczególne implementacje prawej strony (`WindowsApi`, `LinuxApi`) mogą być modyfikowane bez wpłynięcia na - opierają się na abstrakcji
+    - _lewą stronę_ mostu też możemy rozwijać poprzez `AdminLogic : UserLogic` + dodatkowe metody (ale to nie jest wymagane)
+
 ### Composite
 > Pozwala łączyć obiekty w drzewa, a następnie jednolicie obsługiwać pojedyncze obiekty i ich zbiory.
 
@@ -186,12 +203,28 @@ Opisują jak efektywnie składać obiekty w większe struktury.
   - **protection** - kontrola dostępu do obiektu ("_mogę to wywołać czy nie mam uprawnień?_") 
   
 ### Façade
-> Zapewnia jeden interfejs dla wielu interfejsów podsystemu. Tworzy interfejs wysokiego poziomu, który upraszcza korzystanie z systemu.
+> Zapewnia prosty interfejs dla złożonego systemu.
 
 - odseparowuje klienta od złożonego interfejsu
-- fasada **posiada** (_has-a_) elementy podsystemu i to do nich deleguje żądania
+- ogranicza coupling: zamiast pracować z **n** klasami, pracujemy tylko z fasadą
+- fasada **posiada** (_has-a_) elementy systemu i to do nich deleguje żądania
+- przykład: chat
+  - zamiast manualnego tworzenia użytkownika, nawiązania połączenia, uwierzytelniania, enkrypcji, kompresji, wysłania wiadomości i rozłączenia
+  - łatwiej owinąć to w fasadę i wystawić tylko interfejs `.Send(from, to, message)`
 
 ### Flyweight
+> Obniża ilość pamięci którą zużywa aplikacja.
+
+- używamy kiedy mamy wiele obiektów i zajmują one dużo pamięci
+- pyłkiem (_flyweight_) nazywamy konkretnie obiekt który jest współdzielony (przechowujący stan wewnętrzny_, tj. niezmienne dane)
+- jako że pyłek jest współdzielony, najczęściej powinien być tylko read-only
+- przykład: renderowanie ikon na mapie
+  - budujemy a'la google maps, chcemy móc oznaczyć rzeczy (kawiarnie, restauracje itp.) na mapie
+  - typowa implementacja miałaby `class Point` który miałby `float X`, `float Y`, `enum PointType { Cafe, Restaurant }` oraz `byte[] Icon`
+    - mając tysiące kawiarni, dla każdej powtarzalibyśmy taki sam byte array ikony, który zajmuje dużo miejsca - out of RAM
+  - lepiej zagregować `PointType` i `Icon` w osobnej klasie, np. `PointIcon`
+    - wystawiamy fabrykę tworzącą `PointIcon`, która ma jakiś wewnętrzny cache - jak została już stworzona taka ikonka to ją zwróci, jak nie to stworzy, zapisze i zwróci
+    - `PointIcon` jest naszym pyłkiem
 
 </details>
 
