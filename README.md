@@ -154,6 +154,7 @@ Opisują jak efektywnie składać obiekty w większe struktury.
   - zazwyczaj rozwiązane dziedziczeniem: `RedCircle`, `BlueCircle`, `PinkCircle`, `RedSquare`, ...
   - dodanie któregokolwiek nowego wymiaru pociąga za sobą dodanie wielu nowych klas np. nowy kolor: `PurpleCircle`, `PurpleSquare`, `PurpleRectangle`
 - rozwiązaniem jest przestawienie się z dziedziczenia na kompozycję, tj. figura **ma** kolor
+- GoF używa terminologii abstrakcja (figura) + szczególna abstrakcja (kwadrat, ...) oraz implementacja (kolor) + konkretne implementacje (czerwony, ...), ale nie chodzi o pojęcia z programowania; to tylko nazwy
 - przykład: UI + API
   - mamy dwie hierarchie: 
     - UI: dla normalnego użytkownika, dla administratora, dla moderatora
@@ -200,7 +201,12 @@ Opisują jak efektywnie składać obiekty w większe struktury.
 - typy proxy:
   - **remote** - pośredniczy z obiektem _zdalnym_, tj. na innym serwerze, w innej libce
   - **virtual** - lazy loading; kiedy stworzenie obiektu jest kosztowne
-  - **protection** - kontrola dostępu do obiektu ("_mogę to wywołać czy nie mam uprawnień?_") 
+  - **protection** - kontrola dostępu do obiektu ("_mogę to wywołać czy nie mam uprawnień?_")
+- przykład: logger który nie spamuje
+  - pewna klasa (nie mamy do niej dostępu) potrzebuje loggera, ale loguje za dużo powtarzających się wiadomości przez co zapycha nam bazę danych
+  - zamiast `Logger`, możemy jej dać `NonSpammingLoggerProxy` który w każdy wywołaniu metody `.Log(message)` będzie sprawdzał czy wiadomość była już zalogowana (cache)
+    - jeżeli była - nic nie zrobi
+    - jeżeli nie była - przekaże request do faktycznego loggera
   
 ### Façade
 > Zapewnia prosty interfejs dla złożonego systemu.
