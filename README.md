@@ -47,9 +47,11 @@
 
 ### Liskov Substitution Principle
 > Funkcje które używają wskaźników lub referencji do klas bazowych, muszą być w stanie używać również obiektów klas dziedziczących po klasach bazowych, bez dokładnej znajomości tych obiektów.
+
 - przykłady:
   - kwadrat dziedziczący po prostokącie: kwadrat **jest** prostokątem, jednak przy implementacjach z metodami `.SetWidth()` i `.SetHeight()`, które mają sens dla `Rectangle`, klasa dziedzicząca `Square : Rectangle` musiałaby je nadpisać żeby wywołanie `.SetWidth()` wywoływało jednocześnie `.SetHeight()` do tej samej wartości. To z kolei mogłoby popsuć np. unit test, który przyjmuje `Rectangle` (a więc potencjalnie też i `Square`), a następnie liczy jego pole poprzez ustawienie boków odpowiednio do długości 2 i 3. Jeżeli policzylibyśmy `rectangle.GetWidth() * rectangle.GetHeight()`, dla instancji _prawdziwego_ `Rectangle` dostalibyśmy 6, a dla `Square` 9.
   - struś dziedziczący po ptaku: struś **jest** ptakiem, jednak niektóre metody nie mają w jego kontekście sensu, jak np. `.Fly()`. Jeżeli do metody która spodziewa się dostać `Bird` i chce wywołać jego metodę latania, przekażemy instancję `Ostrich` aplikacja może znaleźć się w złym stanie przez to że struś nie potrafi latać.
+
 ### Interface Segregation Principle
 > Wiele dedykowanych interfejsów jest lepsze niż jeden ogólny.
 
@@ -123,6 +125,15 @@ Opisują jak efektywnie tworzyć obiekty.
 - klient korzysta z interfejsu budowniczego, jego implementacja może być zmieniona bez jego wiedzy
 
 ### Prototype
+> Umożliwia kopiowanie istniejących obiektów bez tworzenia zależności do konkretnych klas.
+
+- używamy kiedy musimy stworzyć obiekt poprzez skopiowanie istniejącego obiektu
+- deleguje proces klonowania do samego obiektu, dzięki czemu mamy dostęp do pól prywatnych
+  - serializacja + deserializacja **nie jest** implementacją wzorca, ale osiąga to samo
+- przykład: powerpoint klonowanie figur
+  - `abstract class Shape` ze zdefiniowaną metodą `abstract Shape Clone()`
+  - każda podklasa np. `Circle : Shape` nadpisuje metodę i wie jak sklonować siebie, mając dostęp do wszystkiego
+  - wiąże się to z tym że klient pracuje na `Shape` a nie na konkretnych klasach np. `Circle`
 
 ### Singleton
 
