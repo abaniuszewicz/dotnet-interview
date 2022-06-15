@@ -136,6 +136,16 @@ Opisują jak efektywnie tworzyć obiekty.
   - wiąże się to z tym że klient pracuje na `Shape` a nie na konkretnych klasach np. `Circle`
 
 ### Singleton
+> Pozwala zapewnić istnienie wyłącznie jednej instancji klasy oraz zapewnia globalny punkt dostępu do niej.
+
+- prywatny konstruktor, aby nikt nie mógł go użyć
+- globalny punkt dostępu `static T GetInstance()` który stworzy i zapisze się w polu statycznym (tylko za pierwszym razem; lazy loading), po czym zwróci istniejący obiekt
+- problem przy wielu wątkach: użyj `Lazy<T>` lub double check lock `instance is null` >> `lock` >> `instance is null` (bo lockowanie jest kosztowne, a potrzebne tylko raz)
+- zły bo
+  - coupling
+  - łamie SRP (robi _coś_ + tworzy siebie oraz kontroluje swój lifetime)
+  - utrudnia testy (bo współdzielą stan singletona)
+- przykład: klasa `ConfigManager` powinna mieć tylko jedną instancję
 
 ### Simple factory
 > Hermetyzuje tworzenie obiektu, zwłaszcza jeżeli proces tworzenia jest bardzo złożony.
