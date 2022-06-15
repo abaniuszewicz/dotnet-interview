@@ -107,8 +107,13 @@ Opisują jak efektywnie tworzyć obiekty.
 ### Factory method
 > Przekazuje odpowiedzialność za tworzenie obiektów do klas podrzędnych.
 
-- metoda wytwórcza powinna zwracać _abstrakcję_, poszczególne podklasy mogą zwracać jej różne implementacje
+- sygnatura metody wytwórczej powinna zwracać _abstrakcję_, poszczególne podklasy zwracają jej różne implementacje
 - podobne do template method, ale różni się **celem** (_return \<T\>_ tj. stwórz coś, zamiast _void_ tj. zrób coś)
+- przykład: `abstract class FileReader` który deleguje stworzenie `IParser` do podklas
+  - szkielet algorytmu znajduje się w klasie `FileReader`
+  - w jednym z kroków _prosi on_ podklasy o stworzenie mu `IParser`
+  - poszczególne parsery (csv, html, xlsx) wiedzą jak czytać siebie
+  - podklasy zwracają mu konkretne instancje `CsvParser : IParser`, a on `FileReader` bazuje na abstrakcji
 
 ### Abstract factory
 > Dostarcza interfejs do tworzenia całych rodzin spokrewnionych lub zależnych od siebie obiektów bez konieczności określania ich klas rzeczywistych.
