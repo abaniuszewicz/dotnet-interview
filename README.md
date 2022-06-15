@@ -118,9 +118,14 @@ Opisują jak efektywnie tworzyć obiekty.
 ### Abstract factory
 > Dostarcza interfejs do tworzenia całych rodzin spokrewnionych lub zależnych od siebie obiektów bez konieczności określania ich klas rzeczywistych.
 
-- abstrakcyjne fabryki wytwarzają całe **spójne** rodziny produktów - np. `IUiElementFactory` pozwalające stworzyć abstrakcyjne `Button` oraz `Dialog`, który jest implementowany przez `HtmlElementFactory` (`HtmlButton`, `HtmlDialog`) oraz `WindowsElementFactory` (`WinButton`, `WinDialog`)
+- abstrakcyjne fabryki wytwarzają całe **spójne** rodziny produktów
+- abstrakcyjna fabryka jest interfejsem, który jest implementowany przez konkretne fabryki
 - często korzysta z factory method (to jedyne publiczne metody jakie znajdują się w abstrakcyjnej fabryce)
 - factory method - dziedziczenie (**my** tworzymy _coś_), abstract factory - kompozycja (**mamy** fabrykę, która tworzy _coś_)
+- przykład: GUI framework
+  - `IUiElementFactory` pozwalające stworzyć abstrakcyjne `abstract class Button` oraz `abstract class Dialog`
+    - `HtmlElementFactory` tworzące `HtmlButton` oraz `HtmlDialog`
+    - `WindowsElementFactory` tworzące `WinButton` oraz `WinDialog`
 
 ### Builder
 > Oddziela konstrukcje złożonego obiektu od jego reprezentacji, dzięki czemu ten sam proces konstrukcji może prowadzić do różnych reprezentacji.
@@ -128,6 +133,11 @@ Opisują jak efektywnie tworzyć obiekty.
 - hermetyzuje operacje niezbędne do stworzenia obiektu
 - tworzenie w procedurze wielokrokowej (różnica względem factory)
 - klient korzysta z interfejsu budowniczego, jego implementacja może być zmieniona bez jego wiedzy
+- często wykorzystuje fluent interface (`return this`)
+- jeżeli chcemy żeby jakieś kroki były wymagane, umieszczamy je w konstruktorze
+- _sprząta_ konstruktor
+  - nie musimy przekazywać 999 parametrów na raz
+  - nadajemy znaczenie _magic parametrom_ (np. zamiast `new (1, 5, 8)` mamy `.WithRadius(1).SetX(5).SetY(8).Build()`)
 
 ### Prototype
 > Umożliwia kopiowanie istniejących obiektów bez tworzenia zależności do konkretnych klas.
