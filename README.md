@@ -508,3 +508,55 @@ Zbiór architektonicznych wymagań. **Nie** jest protokołem ani żadnym standar
 ### JWT
 
 </details>
+</details>
+
+
+<details><summary><h1>Testy</h1></summary>
+- Piramida testów: E2E < Integration < Unit
+  - unit testów najwięcej, E2E najmniej
+  - unit testy wykonują się najszybciej
+  - unit testy są _najtańsze_ (moc obliczeniowa)
+
+<details><summary><h2>Unit</h2></summary>
+- Działają bez komunikacji z infrastrukturą
+  - Zakładamy że _wszystko działa_ i stosujemy zamiast nich mocki.
+- Działają _w próżni_, nic innego ich nie obchodzi oprócz klasy którą testują.
+</details>
+
+<details><summary><h2>Component</h2></summary>
+- To samo co unit testing, tylko _większe_. Testują kilka unitów jednocześnie.
+</details>
+
+<details><summary><h2>Integration</h2></summary>
+- Testują współdziałanie klas: IO, sieć, file system
+- Testują np. pojedynczy endpoint, pojedynczy element UI oraz ich bezpośrednie zależności
+- Potrzebują działającej infrastruktury żeby testować
+- Również używają mocków
+  - przykład: kiedy nasze API integruje się z innymi API, np. GithubAPI
+  - i tak nie mamy nad tym kontroli, więc "mockujemy integracyjnie" - to nie jest taki mock jak w przypadku unit testów, ale działające fake api które zachwuje się tak samo
+  - możemy przetestować różne scenariusze, np. co się stanie kiedy GithubAPI padnie?
+- Niektórzy olewają inne rodzaje testów, bo te wprowadzają największą wartość do projektu
+
+Rodzaje:
+- top>down
+- down>top
+- sandwitch
+- big bang
+- risky/hottest
+</details>
+
+<details><summary><h2>End to end (E2E; system)</h2></summary>
+- testuje wszystko w systemie od początku do samego końca
+  - przykład: jak 2 API współpracują ze sobą. Jedno wpisuje coś do bazy danych, czekamy 1 minutę i sprawdzamy czy drugie może to odczytać.
+- zazwyczaj testowany jest prawdziwy system (ale można też staging environment)
+- mogą być też _niebezpieczne_ do odpalenia równolegle, jako że zmieniają stan faktycznego systemu
+
+Rodzaje:
+- smoke - testują prawdziwe zdeployowane środowisko
+- performance
+  - load
+  - spike
+  - stress
+</details>
+
+</details>
