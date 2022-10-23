@@ -534,7 +534,7 @@ Zbiór architektonicznych wymagań. **Nie** jest protokołem ani żadnym standar
 - Również używają mocków
   - przykład: kiedy nasze API integruje się z innymi API, np. GithubAPI
   - i tak nie mamy nad tym kontroli, więc "mockujemy integracyjnie" - to nie jest taki mock jak w przypadku unit testów, ale działające fake api które zachwuje się tak samo
-  - możemy przetestować różne scenariusze, np. co się stanie kiedy GithubAPI padnie?
+  - możemy przetestować różne scenariusze, np. co się stanie kiedy GithubAPI padnie? normalnie nie moglibyśmy przecież go ubić sami na potrzeby testów
 - Niektórzy olewają inne rodzaje testów, bo te wprowadzają największą wartość do projektu
 
 Rodzaje:
@@ -543,6 +543,12 @@ Rodzaje:
 - sandwitch
 - big bang
 - risky/hottest
+
+Kroki:
+1. Setup: postawić dockera, postawić bazę danych, zaseedować bazę danych itp.
+2. Mockowanie zależności: mockowanie zewnętrznych API (**nie** w sensie unit testowym, zamiast tego stawiamy fake api)
+3. Act + Assert
+4. Cleanup: wyczyszczenie dodanych rzeczy itp.
 </details>
 
 <details><summary><h2>End to end (E2E; system)</h2></summary>
