@@ -137,7 +137,9 @@
 
 ## Stos/sterta
 
-## Task/thread
+## `Task`/`Thread`
+- `Task` - _obietnica rezultatu uzyskanego w przyszłości_. Używa `Threadpool`.
+- `Thread` - osobny wątek egzekucji, koncepcja niskopoziomowa (nie używaj). Wbudowane w system operacyjny, każdy ma swoją własną pamięć. Mogą wykonywać wiele tasków jednocześnie.
 
 ## Garbage collector
 - wykonuje się kiedy:
