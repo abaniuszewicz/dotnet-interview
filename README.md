@@ -253,7 +253,7 @@
 | `[SetUp]`                     | `[TestInitialize]`          | Constructor                        | setup co pojedynczą metodę testową         |   |
 | `[TearDown]`                  | `[TestCleanup]`             | `IDisposable.Dispose`              | tear down co pojedynczą metodę testową     |   |
 | `[OneTimeSetUp/TearDown]`     | `[ClassInitialize/CleanUp]` | `IClassFixture<T>`                 | setup/teardown co pojedynczą klasę testową |   |
-| `[Test]` `[TestCase(1, 2, 3]` | `[DataSource]`              | `[Theory]` `[InLineData(1, 2, 3)]` | Theory (data-driven test)                  |   |
+| `[Test]` `[TestCase(1, 2]`    | `[DataSource]`              | `[Theory]` `[InLineData(1, 2)]`    | Theory (data-driven test)                  |   |
 
 - aby odpalić testy: 
   - wszystkie: `dotnet test`
