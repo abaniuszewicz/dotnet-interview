@@ -139,7 +139,11 @@
 
 ## `Task`/`Thread`
 - `Task` - _obietnica rezultatu uzyskanego w przyszłości_. Używa `Threadpool`.
+  - może zwrócić rezultat
+  - można je cancellować
 - `Thread` - osobny wątek egzekucji, koncepcja niskopoziomowa (nie używaj). Wbudowane w system operacyjny, każdy ma swoją własną pamięć. Mogą wykonywać wiele tasków jednocześnie.
+  - nie zwraca rezultatu
+  - nie można ich cancellować
 
 ## Garbage collector
 - wykonuje się kiedy:
