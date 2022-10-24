@@ -247,13 +247,13 @@
 <details><summary><h2>Frameworki</h2></summary>
 
 ## Testowe
-| NUnit                         | MSTest                      | xUnit                              | Komentarze                                 |   |
-|-------------------------------|-----------------------------|------------------------------------|--------------------------------------------|---|
-| `[Test]`                      | `[TestMethod]`              | `[Fact]`                           | oznaczanie metod testowych                 |   |
-| `[SetUp]`                     | `[TestInitialize]`          | Constructor                        | setup co pojedynczą metodę testową         |   |
-| `[TearDown]`                  | `[TestCleanup]`             | `IDisposable.Dispose`              | tear down co pojedynczą metodę testową     |   |
-| `[OneTimeSetUp/TearDown]`     | `[ClassInitialize/CleanUp]` | `IClassFixture<T>`                 | setup/teardown co pojedynczą klasę testową |   |
-| `[Test]` `[TestCase(1, 2]`    | `[DataSource]`              | `[Theory]` `[InLineData(1, 2)]`    | Theory (data-driven test)                  |   |
+| NUnit                           | MSTest                      | xUnit                                | Komentarze                                 |   |
+|---------------------------------|-----------------------------|--------------------------------------|--------------------------------------------|---|
+| `[Test]`                        | `[TestMethod]`              | `[Fact]`                             | oznaczanie metod testowych                 |   |
+| `[SetUp]`                       | `[TestInitialize]`          | Constructor                          | setup co pojedynczą metodę testową         |   |
+| `[TearDown]`                    | `[TestCleanup]`             | `IDisposable.Dispose`                | tear down co pojedynczą metodę testową     |   |
+| `[OneTimeSetUp/TearDown]`       | `[ClassInitialize/CleanUp]` | `IClassFixture<T>`                   | setup/teardown co pojedynczą klasę testową |   |
+| `[Test]`<br />`[TestCase(1, 2]` | `[DataSource]`              | `[Theory]`<br />`[InLineData(1, 2)]` | Theory (data-driven test)                  |   |
 
 - aby odpalić testy: 
   - wszystkie: `dotnet test`
