@@ -87,6 +87,8 @@
 
 <details><summary><h2>Ogólne</h2></summary>
 
+## CLR
+
 ## Modyfikatory dostępu
 - `public` - widoczne wszędzie
 - `private` - widoczne tylko wewnątrz tej klasy
@@ -96,8 +98,21 @@
 - `private protected` - widoczne tylko wewnątrz klas dziedziczących znajdujących się w tym samym assembly
 
 ## Rodzaje kolekcji
+- `T[]` - raczej nie używamy arrayów, chyba że wiemy że rozmiar kolekcji się nie zmieni albo dla konwencji (np. `byte[]`)
+- `List<T>` - możliwość dodawania/usuwania elementów, pod spodem siedzi array który zmienia swój rozmiar. Dodawanie na koniec jest zazwyczaj szybkie, dodawanie na początku powoduje przepisanie całego arraya.
+- `HashSet<T>` - brak kolejności, brak duplikatów
+- `Queue<T>` - kolejka. Metody: `.Enqueue(t)`, `t .Dequeue()`, `t .Peek()`.
+- `Stack<T>` - stos. Metody: `Push(t)`, `t Pop()`, `t .Peek()`.
+- `LinkedList<T>` - metody: `.AddBefore(node, t)`, `.AddAfter(node, t)`
+- `Dictionary<TKey, TValue>` - metody: `.Add(key, value)`, `.Contains(key)`, `bool TryGetValue(key, out value)`
 
 ## Sposoby iterowania
+- `foreach` loop
+- LINQ `collection.ForEach(el => {})`
+- `for` loop
+- `while`
+- `do-while`
+- używając biblioteki `Polly`
 
 ## Boxing/unboxing
 
@@ -110,12 +125,31 @@
 ## Task/thread
 
 ## Garbage collector
+- wykonuje się kiedy:
+  - systemowi brakuje pamięci, **lub**
+  - obiekty zużywają dużo pamięci, **lub**
+  - kiedy wywołamy `GC.Collect()` (don't)
+- zbiera elementy do których nikt już nie używa referencji
+- operuje na _generacjach_ (0, 1, 2):
+  - w niższych generacjach żyją obiekty _krótkożyjące_, pamięć zbierana jest tam najczęściej
+  - każdy obiekt który przeżyje swoją generację jest promowany do wyższej generacji
+- dla obiektów _unmanaged_ (np. dostęp do plików, sieci) musimy wyczyścić pamięć sami:
+  - dostarczamy implementację `IDisposable`
+  - dostarczamy `~dekonstruktor` w razie gdyby klient zapomniał wywołać `.Dispose()`
+
+## Sposoby realizowania współbieżności
+- `async`/`await` - wykorzystuje obietnice w celu uniknięcia tworzenia niepotrzebnych wątków
+- **Rx** (programowanie reaktywne) - opiera się na zdarzeniach asynchronicznych. Model `Observer`/`Observable` z subskrypcjami do wydarzeń.
+- **Parallel** (programowanie równoległe) - obsługiwane przez statyczną klasę `Parallel` (np. `Parallel.ForEach(collection, element => {}))`
+- **TPL Dataflow** - bloki przepływu danych które łączymy wejściami/wyjściami.
+- **Thread** - just don't
+- **BackgroundWorker** - just don't
 
 </details>
 
 <details><summary><h2>Słowa kluczowe</h2></summary>
 
-## `interface/abstract`
+## `interface`/`abstract`
 | `interface`               | `abstract`                                |
 |---------------------------|-------------------------------------------|
 | _I can do something_      | _I'm something_                           |
@@ -132,7 +166,7 @@
 | mogą mieć metody              | mogą mieć metody              |
 | mogą implementować interfejsy | mogą implementować interfejsy |
 
-## `async/await`
+## `async`/`await`
 - `async` - dodawane do deklaracji metody, umożliwia zastosowanie w niej `await`
   - zostały wprowadzone jako para żeby zachować kompatybilność wsteczną
   - metoda `async` musi zwracać `Task`, `Task<T>` lub `void` (tylko dla eventów)
@@ -147,13 +181,13 @@
   - `.ConfigureAwait(false)` oznacza że kod zostanie wznowiony w wątku puli wątków
 - `async`/`await` jest transformowany do maszyny stanów: w pętli oczekuje na zakończenie/anulowanie/wyjątek
 
-## `break/continue`
+## `break`/`continue`
 - `break` - wyjdzie z pętli
 - `continue` - przeskoczy aktualną iterację
 
-## `using/dispose`
+## `using`/`dispose`
 
-## `try-catch-finally`
+## `try`-`catch`-`finally`
 - `try`
   - w bloku `try` umieszczamy operacje które _mogą_ się nie powieść (np. problemy z dostępem do pliku)
   - w przypadku wystąpienia wyjątku, kod przejdzie do bloku `catch` (o ile istnieje), a następnie `finally` (o ile istnieje)
@@ -167,14 +201,14 @@
   - wykona się zawsze, niezależnie czy w `try` poleci wyjątek czy nie
   - jeżeli w `try` umieścimy `return` statement, `finally` i tak się wykona
 
-## `out/ref`
+## `out`/`ref`
 - oba to modyfikatory parametrów w sygnaturze metody
 - `out` - zmienna **nie zostaje** przekazana z zewnątrz i musi zostać stworzona wewnątrz metody przed jej opuszczeniem (np. `int.TryParse(s, out result)`)
 - `ref` - zmienna zostaje przekazana z zewnątrz
   - _podwójny wskaźnik_ - jeżeli parametr zmieni się wewnątrz funkcji, to zmieni się też w funkcji która go przekazała przez `ref`
   - używane też żeby metoda _mogła zwracać wiele argumentów_ (np. `DoSomething(ref int x, ref int y)`; to złe użycie, metoda powinna zamiast tego zwracać jakiś agregat/robić mniej)
 
-## `!/?/?:/??`
+## `!`/`?`/`?:`/`??`
 - `?` - nullable type
   - używane przy definicji zmiennej: `int?`/`string?`
   - w przypadku typu wartościowego oznacza że może mieć on również wartość `null` (poprzez owrapowanie go w `Nullable<int>`)
@@ -201,7 +235,7 @@
   - może być tylko użyte razem ze słówkiem `override`
   - _normalne_ metody są `sealed` by default
 
-## `virtual/abstract`
+## `virtual`/`abstract`
 
 | `abstract`                                                           | `virtual`                                                                    |
 |----------------------------------------------------------------------|------------------------------------------------------------------------------|
@@ -216,15 +250,50 @@
 <details><summary><h2>Biblioteki</h2></summary>
 
 ## `FluentAssertions`
+- służy do pisania asercji
+- oferuje łatwiejszy, fluent syntax: `Assert.AreEqual("result", value)` vs `value.Should().Be("result")`
+- porównanie obiektów:
+  - `result.Should().Be(other)` - użyje implementacji `.Equals()`
+  - `result.Should().BeSameAs(other)` - sprawdzi czy to jest ta sama referencja
+  - `result.Should().BeEquivalentTo(other)` - sprawdzi czy oba obiekty (mogą być różnych typów, np. `Order` i `OrderDto`) mają takie same wartości w publicznych membersach. Porównywane są wartości w propertiesach o takich samych nazwach. Jeżeli nie będzie jakiegoś membersa w drugim obiekcie to poleci błąd.
+- porównanie kolekcji:
+  - `.NotBeEmpty()`, `.HaveCount(c => c > 3)`, `.HaveCountGreaterThan(3)`
+  - `col.ShouldBeEquivalentTo(otherCol)`, `col.ShouldBeEquivalentTo(otherCol, opts => opts.WithStrictOrdering()`), 
+- alternatywa: asercje dostępne we frameworku (statyczne `Assert.Cośtam()`)
+
 ## `Moq`
+- służy do mockowania zależności
+- operujemy na typie `Mock<T>`
+- typowe operacje:
+  - `mock.Setup(circle => circle.Radius).Returns(3)`
+  - `mock.Verify(circle => circle.SetRadius(It.IsAny<int>(), Times.Once()))`
+- alternatywa: `NSubstitute`
+
 ## `Bogus`
+- służy do generowania fake'owych, realistycznych danych
+- operujemy na typie `Faker<T>`
+- typowe operacje:
+  - `var personGenerator = new Faker<Person>().RuleFor(p => p.Name, f => f.Person.Name).RuleFor(p => p.Age, f => f.Person.Age)`
+  - `var person = personGenerator.Generate()`
+
 ## `Testcontainers`
+- służy do stawiania kontenerów docker
+- każda metoda/klasa/zestaw klas może korzystać z niezależnego środowiska (np. bazy danych)
+- typowe operacje:
+  - `var dbContainer = new TestContainersBuilder<PostgresSqlTestcontainer>().WithDatabase(new PostgresSqlTestcontainerConfiguration()).Build())`
+  - trzeba podmienić connection stringi używane przez apkę na nasze _testowe_: wywalić z `IServiceCollection` `IDbConnectionFactory` i zarejestrować nasze własne, używające `dbContainer.ConnectionString`
+
+## `Wiremock`
+- służy do stawiania fake api aby sprawdzić zachowania w przypadkach których nie możemy przetestować (np. kiedy padnie 3rd party API GitHuba)
+- przechwytuje żądania HTTP i zwraca to co chcemy żeby zwróciło
+- typowe operacje:
+  - `_wireMockServer.Given(Request.Create().WithPath("/users").UsingGet()).RespondWith(Response.Create().WithBody(user))`
 
 </details>
 
 <details><summary><h2>Typy</h2></summary>
 
-## `HttpClient/WebClient`
+## `HttpClient`/`WebClient`
 
 </details>
 
