@@ -117,8 +117,23 @@
 ## Boxing/unboxing
 
 ## Dependency Injection
+> Dostarczanie obiektowi obiektów których potrzebuje zamiast _zmuszanie_ go do stworzenia ich samemu.
+
+- dostarczane poprzez: konstruktor, settery, metody
+- SRP: obiekt nie musi sam tworzyć swoich zależności
+- DI/OCP: można podmienić zależności bez zmiany klas która ich używa (promuje _programowanie do interfejsów_)
+- pozwala na mockowanie zależności
 
 ## Regex
+> Wzorzec opisujący łańcuch symboli
+
+- symbole:
+  - `.` - wszystko, `\d` - cyfra, `\D` - **nie**-cyfra, `\w` - `[a-zA-Z0-9]`, `\s` - whitespace
+  - `|` - or, `()` - grupa
+  - `[]` - zbiór znaków, `[a-z]` - zakres zbioru znaków, `[^a-z]` - żaden z zakresu
+  - `^` - początek, `$` - koniec, `\b` - początek słowa
+  - `*` - zero lub więcej, `+` - jeden lub więcej, `?` - zero lub jeden, `{m}` - _m_ razy, `{m,n}` - od _m_ do _n_ razy (włącznie), `{m,}` - _m_ lub więcej razy, `*?` - lazy (jak najmniej)
+- przykład: `\b\d{1,2}/\d{1,2}/\d{4}\b` matchowanie dat, np. 11/12/1994
 
 ## Stos/sterta
 
@@ -185,7 +200,10 @@
 - `break` - wyjdzie z pętli
 - `continue` - przeskoczy aktualną iterację
 
-## `using`/`dispose`
+## `using`/`Dispose`
+- `using` - import typów w namespace/alias dla namespaceów
+- `using` - automatyczne zwolnienie zasobów poprzez wygenerowanie kodu `try`-`finally`, gdzie `.Dispose()` jest umieszczone w `finally`
+- `Dispose()` - pochodzi z interfejsu `IDisposable`; służy do zwolnienia _unmanaged_ zasobów (lub wywołania metod `.Dispose()` swoich podklas)
 
 ## `try`-`catch`-`finally`
 - `try`
@@ -247,17 +265,24 @@
 <details><summary><h2>Frameworki</h2></summary>
 
 ## Testowe
-| NUnit                           | MSTest                      | xUnit                                | Komentarze                                 |   |
-|---------------------------------|-----------------------------|--------------------------------------|--------------------------------------------|---|
-| `[Test]`                        | `[TestMethod]`              | `[Fact]`                             | oznaczanie metod testowych                 |   |
-| `[SetUp]`                       | `[TestInitialize]`          | Constructor                          | setup co pojedynczą metodę testową         |   |
-| `[TearDown]`                    | `[TestCleanup]`             | `IDisposable.Dispose`                | tear down co pojedynczą metodę testową     |   |
-| `[OneTimeSetUp/TearDown]`       | `[ClassInitialize/CleanUp]` | `IClassFixture<T>`                   | setup/teardown co pojedynczą klasę testową |   |
-| `[Test]`<br />`[TestCase(1, 2]` | `[DataSource]`              | `[Theory]`<br />`[InLineData(1, 2)]` | Theory (data-driven test)                  |   |
+| NUnit                           | MSTest                      | xUnit                                | Komentarze                                 |
+|---------------------------------|-----------------------------|--------------------------------------|--------------------------------------------|
+| `[Test]`                        | `[TestMethod]`              | `[Fact]`                             | oznaczanie metod testowych                 |
+| `[SetUp]`                       | `[TestInitialize]`          | Constructor                          | setup co pojedynczą metodę testową         |
+| `[TearDown]`                    | `[TestCleanup]`             | `IDisposable.Dispose`                | tear down co pojedynczą metodę testową     |
+| `[OneTimeSetUp/TearDown]`       | `[ClassInitialize/CleanUp]` | `IClassFixture<T>`                   | setup/teardown co pojedynczą klasę testową |
+| `[Test]`<br />`[TestCase(1, 2]` | `[DataSource]`              | `[Theory]`<br />`[InLineData(1, 2)]` | Theory (data-driven test)                  |
 
 - aby odpalić testy: 
   - wszystkie: `dotnet test`
   - wybrane: `dotnet test --filter FullyQualifiedName=~Tests.Integration`
+- co sprawdzamy w przypadku API:
+  - status code: `response.StatusCode().Should().Be(HttpStatusCode.NotFound)`
+  - headery: `response.Headers.Location.Should().Be("users/id")` albo `response.Headers.GetValues("Location").Should().Contain("users/id")`
+  - body: `var body = response.Content.ReadFromJsonAsync<T>()`
+- w jakiej kolejności lecą testy (xUnit):
+  - wewnątrz jednej klasy testy lecą po kolei
+  - osobne klasy odpalają się jednocześnie
 
 </details>
 
@@ -306,6 +331,11 @@
 </details>
 
 <details><summary><h2>Typy</h2></summary>
+
+## `WebApplicationFactory<T>`
+- sposób aby odpalić API które testujemy w pamięci
+- daje możliwość stworzenia `HttpClient` który może wywoływać to API działające w pamięci
+- zazwyczaj umieszczamy w `IClassFixture<WebApplicationFactory<T>>` żeby cała klasa testowa dzieliła to samo API
 
 ## `HttpClient`/`WebClient`
 
