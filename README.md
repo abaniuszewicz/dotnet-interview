@@ -253,7 +253,7 @@
 | `[SetUp]`                     | `[TestInitialize]`          | Constructor                        | We believe that use of [SetUp] is generally bad. However, you can implement a parameterless constructor as a direct replacement. See Note 2 |   |
 | `[TearDown]`                  | `[TestCleanup]`             | `IDisposable.Dispose`              | We believe that use of [TearDown] is generally bad. However, you can implement IDisposable.Dispose as a direct replacement. See Note 2      |   |
 | `[OneTimeSetUp/TearDown]`     | `[ClassInitialize/CleanUp]` | IClassFixture<T>                   | To get per-class fixture setup/teardown, implement IClassFixture<T> on your test class. See Note 3                                          |   |
-| `[Test]` `[TestCase(1, 2, 3]` | `[DataSource]`              | `[Theory]` `[InLineData(1, 2, 3)]` | Theory (data-driven test). See Note 4                                                                                                       |   |                                                                                                  |   |
+| `[Test]` `[TestCase(1, 2]`    | `[DataSource]`              | `[Theory]` `[InLineData(1, 2)]`    | Theory (data-driven test). See Note 4                                                                                                       |   |                                                                                                  |   |
 
 - aby odpalić testy: 
   - wszystkie: `dotnet test`
