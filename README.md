@@ -115,6 +115,8 @@
 - używając biblioteki `Polly`
 
 ## Boxing/unboxing
+- boxing - typ wartościowy na typ referencyjny; implicit (`int i = 123; object o = i;`)
+- unboxing - typ referencyjny na wartościowy; explicit (`int i = 123; object o = i; int x = (int)o`)
 
 ## Dependency Injection
 > Dostarczanie obiektowi obiektów których potrzebuje zamiast _zmuszanie_ go do stworzenia ich samemu.
@@ -136,6 +138,8 @@
 - przykład: `\b\d{1,2}/\d{1,2}/\d{4}\b` matchowanie dat, np. 11/12/1994
 
 ## Stos/sterta
+- typy referencyjne: sterta
+- typy wartościowe: to zależy (np. jeżeli jest częścią klasy, jest zboxowany, jest w arrayu itd. to na stercie)
 
 ## `Task`/`Thread`
 - `Task` - _obietnica rezultatu uzyskanego w przyszłości_. Używa `Threadpool`.
