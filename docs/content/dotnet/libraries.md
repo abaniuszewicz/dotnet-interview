@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Biblioteki
-parent: Pojęcia
+parent: .NET/C#
 nav_order: 4
 ---
 
