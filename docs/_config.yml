@@ -1,0 +1,39 @@
+title: dotnet interview
+email: your-email@example.com
+description: >-
+  Dotnet interview questions and answers
+baseurl: ""
+url: ""
+github_username:  abaniuszewicz
+
+theme: just-the-docs
+plugins:
+  - jekyll-default-layout
+
+back_to_top: true
+back_to_top_text: "Back to top"
+
+callouts_level: quiet
+callouts:
+  def:
+    title: Definicja
+    color: purple
+
+aux_links:
+  "github.com/abaniuszewicz":
+    - "//github.com/abaniuszewicz"
+
+kramdown:
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
+search_enabled: true
+search:
+  heading_level: 2
+  previews: 2
+  preview_words_before: 3
+  preview_words_after: 3
+  tokenizer_separator: /[\s/]+/
+  rel_url: true
+  button: false
