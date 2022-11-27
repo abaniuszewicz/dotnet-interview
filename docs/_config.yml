@@ -3,10 +3,11 @@ email: your-email@example.com
 description: >-
   Dotnet interview questions and answers
 baseurl: ""
-url: ""
+url: "https://abaniuszewicz.github.io/dotnet-interview"
 github_username:  abaniuszewicz
 
-theme: just-the-docs
+# theme: just-the-docs # LOCAL
+remote: # REMOTE
 plugins:
   - jekyll-default-layout
 
