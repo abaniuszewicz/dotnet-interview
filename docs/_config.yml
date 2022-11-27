@@ -6,9 +6,12 @@ baseurl: ""
 url: "https://abaniuszewicz.github.io/dotnet-interview"
 github_username:  abaniuszewicz
 
-theme: just-the-docs
+# theme: just-the-docs
+remote_theme: just-the-docs/just-the-docs
 plugins:
+  - jekyll-remote-theme
   - jekyll-default-layout
+  - rake
 
 back_to_top: true
 back_to_top_text: "Back to top"
