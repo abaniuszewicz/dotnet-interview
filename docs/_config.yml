@@ -2,8 +2,8 @@ title: dotnet interview
 email: your-email@example.com
 description: >-
   Dotnet interview questions and answers
-baseurl: ""
-url: "https://abaniuszewicz.github.io/dotnet-interview"
+url: "https://abaniuszewicz.github.io"
+baseurl: "/dotnet-interview"
 github_username:  abaniuszewicz
 
 # theme: just-the-docs
@@ -21,6 +21,8 @@ callouts:
   def:
     title: Definicja
     color: purple
+
+permalink: pretty
 
 aux_links:
   "github.com/abaniuszewicz":
@@ -40,3 +42,9 @@ search:
   tokenizer_separator: /[\s/]+/
   rel_url: true
   button: false
+
+compress_html:
+  ignore:
+    envs: all
+
+collections_dir: content
