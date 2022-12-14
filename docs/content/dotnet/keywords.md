@@ -35,15 +35,18 @@ nav_order: 2
 | equality: sprawdza referencje | equality: sprawdza wartości   | equality: sprawdza wartości   |
 
 ### Kiedy użyć czego?
+
 #### `struct`
 - kiedy może być value type
 - modyfikatory:
   - `readonly` → jeżeli ma być niemutowalna
   - `record` → jeżeli ma dostać _specjalny syntax_, tj. `with {}` oraz przeładowania
+  
 #### `record`
 - kiedy musi być reference type
 - jeżeli ma być porównywany przez wartość
 - jeżeli ma dostać _specjalny syntax_, tj. `with {}` oraz przeładowania
+  
 #### `class`
 - w każdym innym przypadku
 
