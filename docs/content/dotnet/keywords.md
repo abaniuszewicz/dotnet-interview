@@ -16,22 +16,36 @@ nav_order: 2
 
 ## `interface`/`abstract`
 
-| `interface`               | `abstract`                                |
-|---------------------------|-------------------------------------------|
-| _I can do something_      | _I'm something_                           |
-| można implementować wiele | tylko jedna klasa bazowa                  |
-| może mieć prywatne metody | może mieć tylko publiczne/internal metody |
-| może mieć konstruktor     | nie może mieć konstruktora                |
+| `interface`                               | `abstract`                |
+|-------------------------------------------|---------------------------|
+| _I can do something_                      | _I'm something_           |
+| można implementować wiele                 | tylko jedna klasa bazowa  |
+| może mieć tylko publiczne/internal metody | może mieć prywatne metody |
+| nie może mieć konstruktora                | może mieć konstruktor     |
 
-## `class/struct`
+## `class`/`struct`/`record`
 
-| class                         | struct                        |
-|-------------------------------|-------------------------------|
-| typ referencyjny              | typ wartościowy               |
-| może być nullem               | nie może być nullem           |
-| można dziedziczyć             | nie można dziedziczyć         |
-| mogą mieć metody              | mogą mieć metody              |
-| mogą implementować interfejsy | mogą implementować interfejsy |
+| class                         | struct                        | record                        |
+|-------------------------------|-------------------------------|-------------------------------|
+| typ referencyjny              | typ wartościowy               | typ referencyjny              |
+| może być nullem               | nie może być nullem           | może być nullem               |
+| można dziedziczyć             | nie można dziedziczyć         | można dziedziczyć             |
+| mogą mieć metody              | mogą mieć metody              | mogą mieć metody              |
+| mogą implementować interfejsy | mogą implementować interfejsy | mogą implementować metody     |
+| equality: sprawdza referencje | equality: sprawdza wartości   | equality: sprawdza wartości   |
+
+### Kiedy użyć czego?
+#### `struct`
+- kiedy może być value type
+- modyfikatory:
+  - `readonly` → jeżeli ma być niemutowalna
+  - `record` → jeżeli ma dostać _specjalny syntax_, tj. `with {}` oraz przeładowania
+#### `record`
+- kiedy musi być reference type
+- jeżeli ma być porównywany przez wartość
+- jeżeli ma dostać _specjalny syntax_, tj. `with {}` oraz przeładowania
+#### `class`
+- w każdym innym przypadku
 
 ## `async`/`await`
 - `async` - dodawane do deklaracji metody, umożliwia zastosowanie w niej `await`
