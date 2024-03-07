@@ -16,11 +16,102 @@ nav_order: 1
 Relacyjne bazy danych.
 
 
-## Joiny
+## Syntax
+
+### Wyciąganie danych
+
+#### SELECT
+
+Zwraca wiersze ze wskazanymi kolumnami.
+
+Może zwrócić pierwszych n rezultatów przez `SELECT TOP n` (nie wszystkie dbms wspierają; odpowiednik MYSQL: `LIMIT`).
+
+```sql
+SELECT column1, column2 -- or * if all
+FROM table1;
+```
+
+#### WHERE
+
+Określa kryteria które musi spełnić wiersz żeby został uwzględniony w wyniku.
+
+```sql
+SELECT *
+FROM table1
+WHERE age > 18;
+```
+
+#### AND, OR, NOT
+
+Operatory używane w `WHERE`.
+
+```sql
+SELECT *
+FROM table1
+WHERE age > 18 AND (country = 'Poland' OR country = 'Germany'); -- WHERE NOT country = 'USA';
+```
+
+#### IN
+
+Skrót dla wielu `OR`-ów.
+
+```sql
+SELECT *
+FROM table1
+WHERE age > 18 AND country IN ('Poland', 'Germany');
+```
+
+#### BETWEEN
+
+Matchowanie danego przedziału, którym mogą być liczby, tekst oraz daty. Przedział jest inkluzywny.
+
+Dla tekstu zwróci wiersze jeżeli mieszczą się one alfabetycznie w danym przedziale.
+
+```sql
+SELECT *
+FROM table1
+WHERE price BETWEEN 10 AND 20;
+```
+
+#### LIKE
+
+Wyszukiwanie po patternie.
+- `%`: 0 lub więcej znaków.
+- `_`: 1 znak.
+
+Do wyszukania bardziej zaawansowanymi patternami można użyc regexów (MYSQL: `REGEXP`, PostgreSQL: `~`).
+
+```sql
+SELECT *
+FROM table1
+WHERE customer_name LIKE 'a%';
+```
+
+#### IS NULL
+
+Sprawdza czy wartość jest nullem. **Nie można użyć do tego operatora `=`.**
+
+```sql
+SELECT *
+FROM table1
+WHERE shipping_date IS NULL;
+```
+
+#### ORDER BY
+
+Sortuje rezultaty. Domyślna kolejność ASC.
+
+```sql
+SELECT *
+FROM table1
+ORDER BY shipping_date; -- ORDER BY shipping_date ASC|DESC;
+```
+
+### Joiny
 
 Służą do łączenia danych znajdujących się w różnych tabelach.
 
-### INNER JOIN
+#### INNER JOIN
 
 Zwraca wiersze które matchują w obu tabelach.
 
@@ -31,7 +122,7 @@ JOIN table2 -- or INNER JOIN
     ON table1.column_name = table2.column_name;
 ```
 
-### LEFT JOIN
+#### LEFT JOIN
 
 Zwraca wszystkie wiersze z lewej tabeli i matchujące wiersze z prawej tabeli.
 
@@ -42,7 +133,7 @@ LEFT JOIN table2 -- or LEFT OUTER JOIN
     ON table1.column_name = table2.column_name;
 ```
 
-### RIGHT JOIN
+#### RIGHT JOIN
 
 Zwraca wszystkie wiersze z prawej tabeli i matchujące wiersze z lewej tabeli.
 
@@ -53,7 +144,7 @@ RIGHT JOIN table2 -- or RIGHT OUTER JOIN
     ON table1.column_name = table2.column_name;
 ```
 
-### FULL JOIN
+#### FULL JOIN
 
 Zwraca wszystkie wiersze z obu tabel.
 
@@ -64,7 +155,7 @@ FULL JOIN table2 -- or FULL OUTER JOIN
     ON table1.column_name = table2.column_name;
 ```
 
-### CROSS JOIN
+#### CROSS JOIN
 
 Zwraca wszystkie kombinacje wierszy z obu tabel.
 
@@ -74,7 +165,7 @@ FROM table1
 CROSS JOIN table2;
 ```
 
-### NATURAL JOIN
+#### NATURAL JOIN
 
 Robi joina automatycznie dobierając kolumny po których joinuje.
 Wybierze do tego kolumny o tych samych nazwach.
@@ -85,7 +176,7 @@ FROM table1
 NATURAL [INNER, LEFT, RIGHT] JOIN table2; -- INNER by default
 ```
 
-### Self join
+#### Self join
 
 Robi joina z tą samą tabelą.
 Trzeba nadać aliasy tabelom żeby odwołać się do ich kolumn.
@@ -94,7 +185,9 @@ Użyteczne np. gdy mamy tabele z "pracownikami" i chcemy pomatchować każdego p
 
 ```sql
 SELECT *
-FROM table1 t1
-JOIN table2 t2
+FROM tab t1
+JOIN tab t2
     ON t1.column_name = t2.column_name;
 ```
+
+### Dodawanie, aktualizowanie i kasowanie danych
