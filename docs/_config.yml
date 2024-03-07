@@ -1,20 +1,8 @@
 title: dotnet interview
-email: your-email@example.com
-description: >-
-  Dotnet interview questions and answers
+description: Dotnet interview questions and answers
+theme: just-the-docs
+
 url: "https://abaniuszewicz.github.io"
-baseurl: "/dotnet-interview"
-github_username:  abaniuszewicz
-
-# theme: just-the-docs
-remote_theme: just-the-docs/just-the-docs
-plugins:
-  - jekyll-remote-theme
-  - jekyll-default-layout
-  - rake
-
-back_to_top: true
-back_to_top_text: "Back to top"
 
 callouts_level: quiet
 callouts:
@@ -22,29 +10,8 @@ callouts:
     title: Definicja
     color: purple
 
-permalink: pretty
-
 aux_links:
   "github.com/abaniuszewicz":
     - "//github.com/abaniuszewicz"
-
-kramdown:
-  syntax_highlighter_opts:
-    block:
-      line_numbers: false
-
-search_enabled: true
-search:
-  heading_level: 2
-  previews: 2
-  preview_words_before: 3
-  preview_words_after: 3
-  tokenizer_separator: /[\s/]+/
-  rel_url: true
-  button: false
-
-compress_html:
-  ignore:
-    envs: all
 
 collections_dir: content
