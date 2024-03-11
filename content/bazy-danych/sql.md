@@ -191,3 +191,45 @@ JOIN tab t2
 ```
 
 ### Dodawanie, aktualizowanie i kasowanie danych
+
+#### INSERT
+ 
+Dodaje wiersze do tabeli.
+
+```sql
+-- Specify values for all columns in the order they appear in the table.
+INSERT INTO table1
+VALUES (col1_value, val2_value, ...); -- Use DEFAULT placeholder to fallback to default value.
+
+-- Specify values only for columns that you care about in any order.
+INSERT INTO table1 (col1_name,  col2_name,  col_4_name)
+VALUES             (col1_value, col2_value, col4_value);
+
+-- Insert multiple rows.
+
+INSERT INTO table1 (col1_name,    col2_name)
+VALUES             (col1_value_a, col2_value_a),
+                   (col1_value_b, col2_value_b),
+                   ...;
+```
+
+#### UPDATE
+
+Aktualizuje wiersze w tabeli.
+
+```sql
+UPDATE table1
+SET col1_name = col1_value, col2_name = col2_value
+WHERE ...;
+```
+
+#### DELETE
+
+Kasuje wiersze w tabeli.
+
+```sql
+DELETE FROM table1
+WHERE ...;
+```
+
+### Grupowanie
