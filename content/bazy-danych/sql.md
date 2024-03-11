@@ -33,7 +33,7 @@ FROM table1;
 
 #### WHERE
 
-Określa kryteria które musi spełnić wiersz żeby został uwzględniony w wyniku.
+Filtrowanie wyników
 
 ```sql
 SELECT *
@@ -206,7 +206,6 @@ INSERT INTO table1 (col1_name,  col2_name,  col_4_name)
 VALUES             (col1_value, col2_value, col4_value);
 
 -- Insert multiple rows.
-
 INSERT INTO table1 (col1_name,    col2_name)
 VALUES             (col1_value_a, col2_value_a),
                    (col1_value_b, col2_value_b),
@@ -233,3 +232,36 @@ WHERE ...;
 ```
 
 ### Grupowanie
+
+#### AGGREGATE FUNCTIONS
+
+```sql
+SELECT MAX(col_name) -- MIN, AVG, SUM, COUNT, ...
+FROM table1;
+```
+
+#### GROUP BY
+
+Grupuje wiersze które mają takie same wartości.
+
+```sql
+SELECT country, COUNT(customer_id) AS count -- Or COUNT(*) which will count all rows, incl. null ones.
+FROM customers
+WHERE age > 18
+GROUP BY country
+ORDER BY count DESC;
+```
+
+#### HAVING
+
+Filtrowanie wyników po zgrupowaniu.
+Można się odwoływać tylko do tego co zselectowaliśmy.
+
+```sql
+SELECT country, COUNT(customer_id) AS count
+FROM customers
+WHERE age > 18
+GROUP BY country
+HAVING COUNT(customer_id) > 5
+ORDER BY count DESC;
+```
