@@ -18,50 +18,100 @@ Relacyjne bazy danych.
 
 ## Syntax
 
-### Wyciąganie danych
-
-#### SELECT
+### SELECT
 
 Zwraca wiersze ze wskazanymi kolumnami.
 
-Może zwrócić pierwszych n rezultatów przez `SELECT TOP n` (nie wszystkie dbms wspierają; odpowiednik MYSQL: `LIMIT`).
+Pierwsze `n` wyników: `SELECT TOP n` (nie wszystkie dbms wspierają; odpowiednik MYSQL: `LIMIT`).
+
+Tylko unikalne wyniki: `SELECT DISTINCT ...`
 
 ```sql
-SELECT column1, column2 -- or * if all
-FROM table1;
+SELECT customer_name -- or * if all columns
+FROM customers;
 ```
 
-#### WHERE
+### WHERE
 
 Filtrowanie wyników
 
 ```sql
 SELECT *
-FROM table1
+FROM customers
 WHERE age > 18;
 ```
 
-#### AND, OR, NOT
+### ORDER BY
+
+Sortuje rezultaty. Domyślna kolejność ASC.
+
+```sql
+SELECT *
+FROM orders
+ORDER BY shipping_date; -- ORDER BY shipping_date ASC|DESC;
+```
+
+### AND, OR, NOT
 
 Operatory używane w `WHERE`.
 
 ```sql
 SELECT *
-FROM table1
+FROM customers
 WHERE age > 18 AND (country = 'Poland' OR country = 'Germany'); -- WHERE NOT country = 'USA';
 ```
 
-#### IN
+### ANY, ALL
+
+Predykaty używane z subquery.
+
+```sql
+SELECT product_name
+FROM products
+WHERE product_id = ANY ( -- ALL; operators: =, <>, >, >=, <, <=
+    SELECT product_id
+    FROM orders
+    WHERE quantity > 1000
+);
+```
+
+### EXISTS
+
+Sprawdza czy w subquery jest jakikolwiek rezultat.
+
+```sql
+SELECT supplier_name
+FROM suppliers s
+WHERE EXISTS (
+    SELECT *
+    FROM products p
+    WHERE p.supplier_id = s.supplier_id AND p.price < 100
+)
+```
+
+### IS NULL
+
+Sprawdza czy wartość jest nullem. 
+
+**Nie można użyć do tego operatora `=`.**
+
+```sql
+SELECT *
+FROM orders
+WHERE shipping_date IS NULL;
+```
+
+### IN
 
 Skrót dla wielu `OR`-ów.
 
 ```sql
 SELECT *
-FROM table1
+FROM customers
 WHERE age > 18 AND country IN ('Poland', 'Germany');
 ```
 
-#### BETWEEN
+### BETWEEN
 
 Matchowanie danego przedziału, którym mogą być liczby, tekst oraz daty. Przedział jest inkluzywny.
 
@@ -69,178 +119,78 @@ Dla tekstu zwróci wiersze jeżeli mieszczą się one alfabetycznie w danym prze
 
 ```sql
 SELECT *
-FROM table1
+FROM products
 WHERE price BETWEEN 10 AND 20;
 ```
 
-#### LIKE
+### LIKE
 
 Wyszukiwanie po patternie.
+Do wyszukania bardziej zaawansowanymi patternami można użyc regexów (MYSQL: `REGEXP`, PostgreSQL: `~`).
+
+Wildcardy:
 - `%`: 0 lub więcej znaków.
 - `_`: 1 znak.
 
-Do wyszukania bardziej zaawansowanymi patternami można użyc regexów (MYSQL: `REGEXP`, PostgreSQL: `~`).
-
 ```sql
 SELECT *
-FROM table1
+FROM customers
 WHERE customer_name LIKE 'a%';
 ```
 
-#### IS NULL
-
-Sprawdza czy wartość jest nullem. **Nie można użyć do tego operatora `=`.**
+### MIN, MAX, AVG, SUM, COUNT
 
 ```sql
-SELECT *
-FROM table1
-WHERE shipping_date IS NULL;
+SELECT MIN(price) -- MAX, AVG, SUM, COUNT, ...
+FROM products;
 ```
 
-#### ORDER BY
-
-Sortuje rezultaty. Domyślna kolejność ASC.
-
-```sql
-SELECT *
-FROM table1
-ORDER BY shipping_date; -- ORDER BY shipping_date ASC|DESC;
-```
-
-### Joiny
+### JOIN
 
 Służą do łączenia danych znajdujących się w różnych tabelach.
 
-#### INNER JOIN
-
-Zwraca wiersze które matchują w obu tabelach.
-
-```sql
-SELECT *
-FROM table1
-JOIN table2 -- or INNER JOIN
-    ON table1.column_name = table2.column_name;
-```
-
-#### LEFT JOIN
-
-Zwraca wszystkie wiersze z lewej tabeli i matchujące wiersze z prawej tabeli.
+Typy:
+- `[INNER] JOIN`: zwraca wiersze które matchują w obu tabelach,
+- Outer:
+  - `LEFT [OUTER] JOIN`: zwraca wszystkie wiersze z lewej tabeli i matchujące z prawej tabeli,
+  - `RIGHT [OUTER] JOIN`: zwraca wszystkie wiersze z prawej tabeli i matchujące z lewej tabeli,
+  - `FULL [OUTER] JOIN`: zwraca wszystkie wiersze z prawej i lewej tabeli,
+- Bez klauzuli `ON`:
+  - `CROSS JOIN`: zwraca wszystkie permutacje wierszy z lewej i prawej tabeli,
+  - `NATURAL [INNER, LEFT, RIGHT] JOIN`: zwraca to co wybrany join; sam dobierze kolumny po której joinować (weźmie te o tej samej nazwie),
+- Self: nazwa typu joina (obojętnie jakiego) w którym lewa i prawa tabela jest tą samą tabelą; trzeba nadać im alias np. `t1`, `t2` żeby się odwołać do konkretnej.
 
 ```sql
 SELECT *
-FROM table1
-LEFT JOIN table2 -- or LEFT OUTER JOIN
-    ON table1.column_name = table2.column_name;
-```
+FROM customers c
+JOIN orders o -- [INNER, LEFT [OUTER], RIGHT [OUTER], FULL [OUTER], CROSS, NATURAL [...]] JOIN
+    ON o.customer_id = c.customer_id; -- CROSS, NATURAL don't take match condition.
 
-#### RIGHT JOIN
-
-Zwraca wszystkie wiersze z prawej tabeli i matchujące wiersze z lewej tabeli.
-
-```sql
+-- Same thing but using common column name.
 SELECT *
-FROM table1
-RIGHT JOIN table2 -- or RIGHT OUTER JOIN
-    ON table1.column_name = table2.column_name;
+FROM customers
+JOIN orders
+    USING (customer_id);
 ```
 
-#### FULL JOIN
+### UNION
 
-Zwraca wszystkie wiersze z obu tabel.
+Łączy wyniki wielu `SELECT`ów.
+
+Warunki:
+- muszą mieć tę samą liczbę kolumn,
+- kolumny muszą mieć kompatybilny typ danych,
+- kolumny muszą być w tej samej kolejności.
+
+Defaultowo nie listuje duplikatów. Aby otrzymać duplikaty używamy `UNION ALL`.
 
 ```sql
-SELECT *
-FROM table1
-FULL JOIN table2 -- or FULL OUTER JOIN
-    ON table1.column_name = table2.column_name;
+SELECT * FROM orders
+UNION -- UNION ALL
+SELECT * FROM orders_archived;
 ```
 
-#### CROSS JOIN
-
-Zwraca wszystkie kombinacje wierszy z obu tabel.
-
-```sql
-SELECT *
-FROM table1
-CROSS JOIN table2;
-```
-
-#### NATURAL JOIN
-
-Robi joina automatycznie dobierając kolumny po których joinuje.
-Wybierze do tego kolumny o tych samych nazwach.
-
-```sql
-SELECT *
-FROM table1
-NATURAL [INNER, LEFT, RIGHT] JOIN table2; -- INNER by default
-```
-
-#### Self join
-
-Robi joina z tą samą tabelą.
-Trzeba nadać aliasy tabelom żeby odwołać się do ich kolumn.
-
-Użyteczne np. gdy mamy tabele z "pracownikami" i chcemy pomatchować każdego pracownika z jego managerem.
-
-```sql
-SELECT *
-FROM tab t1
-JOIN tab t2
-    ON t1.column_name = t2.column_name;
-```
-
-### Dodawanie, aktualizowanie i kasowanie danych
-
-#### INSERT
- 
-Dodaje wiersze do tabeli.
-
-```sql
--- Specify values for all columns in the order they appear in the table.
-INSERT INTO table1
-VALUES (col1_value, val2_value, ...); -- Use DEFAULT placeholder to fallback to default value.
-
--- Specify values only for columns that you care about in any order.
-INSERT INTO table1 (col1_name,  col2_name,  col_4_name)
-VALUES             (col1_value, col2_value, col4_value);
-
--- Insert multiple rows.
-INSERT INTO table1 (col1_name,    col2_name)
-VALUES             (col1_value_a, col2_value_a),
-                   (col1_value_b, col2_value_b),
-                   ...;
-```
-
-#### UPDATE
-
-Aktualizuje wiersze w tabeli.
-
-```sql
-UPDATE table1
-SET col1_name = col1_value, col2_name = col2_value
-WHERE ...;
-```
-
-#### DELETE
-
-Kasuje wiersze w tabeli.
-
-```sql
-DELETE FROM table1
-WHERE ...;
-```
-
-### Grupowanie
-
-#### AGGREGATE FUNCTIONS
-
-```sql
-SELECT MAX(col_name) -- MIN, AVG, SUM, COUNT, ...
-FROM table1;
-```
-
-#### GROUP BY
+### GROUP BY
 
 Grupuje wiersze które mają takie same wartości.
 
@@ -252,7 +202,7 @@ GROUP BY country
 ORDER BY count DESC;
 ```
 
-#### HAVING
+### HAVING
 
 Filtrowanie wyników po zgrupowaniu.
 Można się odwoływać tylko do tego co zselectowaliśmy.
@@ -264,4 +214,45 @@ WHERE age > 18
 GROUP BY country
 HAVING COUNT(customer_id) > 5
 ORDER BY count DESC;
+```
+
+### INSERT
+
+Dodaje wiersze do tabeli.
+
+```sql
+-- Specify values for all columns in the order they appear in the table.
+INSERT INTO customers
+VALUES (DEFAULT, 'Adam B', 29, ...); -- Use DEFAULT placeholder to fallback to default value.
+
+-- Specify values only for columns that you care about in any order.
+INSERT INTO customers (age,  customer_name,  country)
+VALUES                (29,   'Adam B',      'Poland');
+
+-- Insert multiple rows.
+INSERT INTO customers (age,  customer_name,  country)
+VALUES                (29,   'Adam B',      'Poland'),
+                      (30,   'Adam C',      'Germany'),
+                      ...;
+```
+
+### UPDATE
+
+Aktualizuje wiersze w tabeli.
+
+```sql
+UPDATE customers
+SET country = 'Finland'
+WHERE customer_id = 1;
+```
+
+### DELETE
+
+Kasuje wiersze w tabeli.
+
+Jeżeli nie damy `WHERE` to wyczyści całą tabelę.
+
+```sql
+DELETE FROM customers
+WHERE country = 'Germany';
 ```
