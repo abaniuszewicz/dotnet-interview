@@ -256,3 +256,84 @@ Jeżeli nie damy `WHERE` to wyczyści całą tabelę.
 DELETE FROM customers
 WHERE country = 'Germany';
 ```
+
+## View
+
+Wirtualna tabela która może być używane w innych miejscach.
+Nie przechowują danych, tylko widok na tabelę pod spodem, stąd nazwa "view".
+Często współdzielone przez VCS jako skrypty `*.sql` żeby wszyscy mogli używać.
+
+Updateable view: rodzaj widoku który może być wykorzystywany do aktualizowania/kasowania
+danych. Używamy tego samego syntaxu co normalnie, tylko zamiast nazwy tabeli dajemy nazwę view.
+View jest updateowalny jeżeli bazuje tylko na jednej tabeli i nie zawiera:
+- aggregate functions (`MIN`, `MAX`, ...),
+- subqueriesów,
+- `GROUP BY`/`HAVING`,
+- `DISTINCT`,
+- `UNION`,
+- (i inne niszowe warunki).
+
+Zalety widoków:
+- upraszczają queriesy,
+- wprowadzenie abstrakcji nad bezpośrednim dostępem do tabeli,
+- jeden punkt zmian (w odniesieniu do wielu luźno leżących skryptów),
+- ograniczenie bezpośredniego dostępu do danych w tabeli (np. ukrycie jakiś wyników przez wbudowanie `WHERE` w viewsa)
+  - jeżeli mamy viewsa który zwraca dane za np. >2019 rok, to
+    nie możemy przypadkowo zmodyfikować historycznych danych.
+
+```sql
+CREATE VIEW sales_by_customer AS
+SELECT c.customer_id, c.customer_name, SUM(o.total) AS sum
+FROM customers c
+JOIN orders o USING (customer_id)
+GROUP BY c.client_id, c.customer_name;
+
+-- Somewhere else.
+SELECT *
+FROM sales_by_customer
+WHERE sum > 100;
+
+-- Other related.
+DROP VIEW sales_by_customer;
+CREATE OR REPLACE VIEW sales_by_customer AS ...;
+```
+
+## Stored Procedure
+
+Zgrupowane komendy SQL które mozna zapisać i używać w innych miejscach.
+Mogą przyjmować parametry. Coś w rodzaju funkcji.
+
+Po co:
+- trzymanie rzeczy związanych z bazą danych w bazie danych,
+- możliwość zmiany działania apki bez konieczności rekompilacji i redeployu,
+- szybsze, bo wykonywane bezpośrednio na bazie (optymalizowane przez db),
+- ograniczenie bezpośredniego dostępu do danych w tabeli.
+
+| [Stored Procedure](#stored-procedure)                   | [View](#view)                                            |
+| ------------------------------------------------------- | -------------------------------------------------------- |
+| Może przyjmować parametry.                              |  Nie może przyjmować parametrów.                         |
+| Może zawierać wiele statementów (pętle, ify, ...).      |  Może zawierać tylko jednego `SELECT`a.                  |
+| Używane do grupowania wielu często wykonywanych komend. |  Używane do grupowania wielu często wykonywanych joinów. |
+
+```sql
+-- This delimiter thing is required only by MySQL.
+DELIMITER $$
+CREATE PROCEDURE get_customers()
+BEGIN
+  SELECT * FROM customers;
+  ... -- more statements terminated by ';'.
+END$$
+DELIMITER ;
+
+-- Somewhere else.
+CALL get_clients();
+
+-- Other related.
+DROP PROCEDURE get_customers; -- Or DROP PROCEDURE IF EXISTS get_customers;
+```
+
+## Trigger/Event
+
+## Transakcja
+
+## 
