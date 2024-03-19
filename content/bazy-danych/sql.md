@@ -263,7 +263,7 @@ Wirtualna tabela która może być używane w innych miejscach.
 Nie przechowują danych, tylko widok na tabelę pod spodem, stąd nazwa "view".
 Często współdzielone przez VCS jako skrypty `*.sql` żeby wszyscy mogli używać.
 
-Updateable view: rodzaj widoku który może być wykorzystywany do aktualizowania/kasowania
+**Updateable view**: rodzaj widoku który może być wykorzystywany do aktualizowania/kasowania
 danych. Używamy tego samego syntaxu co normalnie, tylko zamiast nazwy tabeli dajemy nazwę view.
 View jest updateowalny jeżeli bazuje tylko na jednej tabeli i nie zawiera:
 - aggregate functions (`MIN`, `MAX`, ...),
@@ -273,7 +273,7 @@ View jest updateowalny jeżeli bazuje tylko na jednej tabeli i nie zawiera:
 - `UNION`,
 - (i inne niszowe warunki).
 
-Zalety widoków:
+Po co:
 - upraszczają queriesy,
 - wprowadzenie abstrakcji nad bezpośrednim dostępem do tabeli,
 - jeden punkt zmian (w odniesieniu do wielu luźno leżących skryptów),
@@ -316,8 +316,7 @@ Po co:
 | Używane do grupowania wielu często wykonywanych komend. |  Używane do grupowania wielu często wykonywanych joinów. |
 
 ```sql
--- This delimiter thing is required only by MySQL.
-DELIMITER $$
+DELIMITER $$ -- This delimiter thing is required only by MySQL.
 CREATE PROCEDURE get_customers()
 BEGIN
   SELECT * FROM customers;
@@ -329,11 +328,118 @@ DELIMITER ;
 CALL get_clients();
 
 -- Other related.
+SHOW PROCEDURE STATUS;
 DROP PROCEDURE get_customers; -- Or DROP PROCEDURE IF EXISTS get_customers;
 ```
 
-## Trigger/Event
+## Trigger
+
+Zbiór komend SQL które odpalają się automatycznie przed/po zmianie (`INSERT`, `UPDATE`, `DElETE`) w danej tabeli.
+
+Triggery które modyfikują tabele mogą wywołać kaskadę innych triggerów (i przy tym nieskończoną rekurencję). 
+
+Po co:
+- audyt zmian,
+- ~~data integrity~~,
+- ~~formatowanie danych przed dodaniem~~.
+
+```sql
+DELIMITER $$ -- This delimiter thing is required only by MySQL.
+CREATE TRIGGER orders_after_insert
+  AFTER INSERT ON orders -- [BEFORE, AFTER] [INSERT, UPDATE, DELETE] ON table 
+  FOR EACH ROW -- [FOR EACH ROW, FOR EACH STATEMENT]. Statement means "once per command".
+BEGIN
+  INSERT INTO orders_audit
+  VALUES (NEW.customer_id, NEW.total, ...); -- NEW, OLD: refer to new/old version of the row.
+END
+DELIMITER ;
+
+-- Other related.
+SHOW TRIGGERS;
+DROP TRIGGER IF EXISTS orders_after_insert;
+```
+
+## Event
+
+Zbiór komend SQL które odpalają się automatycznie co daną jednostkę czasu.
+
+```sql
+DELIMITER $$ -- This delimiter thing is required only by MySQL.
+CREATE EVENT IF NOT EXISTS yearly_delete_stale_audit_rows
+ON SCHEDULE EVERY 1 YEAR
+DO BEGIN
+  DELETE FROM orders_audit
+  WHERE action_date < NOW() - INTERVAL 1 YEAR;
+END $$
+DELIMITER ;
+
+-- Other related.
+SHOW EVENTS;
+DROP EVENT IF EXISTS yearly_delete_stale_audit_rows;
+ALTER EVENT yearly_delete_stale_audit_rows DISABLE; -- Or ENABLE.
+```
 
 ## Transakcja
 
-## 
+Zbiór komend SQL które stanowią pojedynczy Unit of Work.
+Albo wszystkie zostaną zakończone poprawnie, albo żadne z nich.
+
+Przykład: Tabela z pieniędzmi. Jeżeli podczas przelewu pobieramy z jednego konta
+i dodajemy na drugie, to jeżeli jedna z tych operacji sfailuje, to druga powinna
+zostać odrzucona.
+
+```sql
+START TRANSACTION;
+  INSERT INTO orders (product_id, quantity)
+  VALUES (99, 3);
+
+  UPDATE products
+  SET quantity = quantity - 3
+  WHERE product_id = 99;
+COMMIT; -- Or ROLLBACK.
+
+-- Other related.
+SET [SESSION, GLOBAL] TRANSACTION ISOLATION LEVEL [READ UNCOMMITED,READ COMMITED,REPEATABLE READ,SERIALIZABLE];
+-- Typically used before START TRANSACTION. Sets the isolation level.
+--   *None*: for the next transaction.
+--   SESSION: for a single connection. 
+--   GLOBAL: for all new transactions in all sessions.
+```
+
+### ACID
+- **Atomicity**
+  - Każda transakcja to pojedynczy UoW, bez względu na to ile zawiera komend.
+  - Albo wszystkie zostaną wykonane i zacommitowane, albo wszystkie zostaną zrollbackowane.
+- **Consistency**
+  - Baza danych jest zawsze w poprawnym stanie.
+- **Isolation** 
+  - Transakcje które modyfikują te same wiersze nie wpływają na siebie nawzajem, bo wiersze są lockowane.
+  - Jeżeli kilka będzie starało się zmodyfikować to samo, zrobią to po kolei. 
+- **Durability** 
+  - Dane po zacommitowanej transakcji zostają zapisane na stałe. 
+  - Jeżeli np. wysiądzie prąd, po ponownym uruchomieniu db dane nie zostaną stracone.
+
+### Isolation levels
+- `READ UNCOMMITED`
+  - Jest w stanie odczytać dane które zostały zmienione przez inną transakcję, nawet jeżeli nie zostały jeszcze zacommitowane.
+- `READ COMMITED`
+  - Jest w stanie odczytać dane które zostały zacommitowane przez inną transakcję w trakcie działania naszej transakcji.
+  - Rozwiązuje problem **dirty readów**, tzn. faktu że `COMMIT` może się nigdy nie wydarzyć - transakcja może zostać np. `ROLLBACK`'nięta, a my pracowalibyśmy na danych które nigdy nie trafiły do bazy danych.
+- `REPEATABLE READ`: 
+  - W obrębie jednej transakcji dane pozostaną niezmienne, nawet jeżeli inna transakcja zmodyfikuje je w tym czasie.
+  - Rozwiązuje problem **Non-repeatable readów**, tzn. sytuacji w której nasza transakcja zawiera np. dwa `SELECT`'y wyciągające ten sam wiersz, to jeżeli w czasie między nimi jakaś inna transakcja zupdateowałaby ten wiersz (czyli `UPDATE`), to oba zwróciłyby różną wersję tego samego wiersza.
+- `SERIALIZABLE`: 
+  - Tak naprawdę wyłączenie jakiejkolwiek współbieżności; transakcje będą wykonywane jedna po drugiej.
+  - Rozwiązuje problem **Phantom readów**, tzn. sytuacji w której nasza transakcja zawierałaby np. dwa `SELECT`'y wyciągające wiele wierszy, to jeżeli w czasie między nimi jakaś inna transakcja zupdateowałaby tą tabelę tak żeby więcej/mniej wierszy matchowało naszego `SELECT`a (czyli `INSERT` lub `DELETE`), to oba zwróciłyby różną ilość wierszy.
+ 
+|                                   | Dirty reads | Non-repeatable reads | Phantom reads |
+| --------------------------------- | ----------- | -------------------- | ------------- |
+| `READ UNCOMMITED`                 |             |                      |               |
+| `READ COMMITED`                   | ✓          |                      |               |
+| `REPEATABLE READ` (MySQL default) | ✓          | ✓                    |               |
+| `SERIALIZABLE`                    | ✓          | ✓                    | ✓            |
+
+"✓" znaczy że dany isolation level (wiersz) zapobiega danemu problemowi (kolumna).
+
+Im bardziej podnosimy isolation level (im niższy wiersz), tym bardziej tracimy performance bazy danych,
+bo będzie coraz więcej locków.

@@ -14,4 +14,5 @@ nav_order: 4
 ---
 
 ## OAuth
-## JWT
+## OIDC - OpenID Connect
+## JWT - JSON Web Tokens
